@@ -1,0 +1,135 @@
+import { StyleSheet } from 'react-native';
+
+import { colors, spacing } from '@/theme';
+
+export default StyleSheet.create({
+  stack: {
+    gap: spacing.base,
+  },
+  listStack: {
+    gap: spacing.md,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.base,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+  },
+  wrap: {
+    flex: 1,
+    gap: 8,
+  },
+  statGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  whiteCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.base,
+    gap: spacing.sm,
+  },
+  recordCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.base,
+    marginBottom: spacing.md,
+    gap: spacing.sm,
+  },
+  statCard: {
+    flex: 1,
+    minWidth: '46%',
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.base,
+    gap: 8,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
+    alignItems: 'center',
+    gap: 8,
+  },
+  chartBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  listRow: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.base,
+    marginBottom: spacing.sm,
+    gap: 8,
+  },
+  identityCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.base,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.base,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+  },
+  screenCentered: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+    gap: spacing.base,
+  },
+  formStack: {
+    gap: spacing.md,
+  },
+  conditionCard: {
+    padding: spacing.base,
+    borderRadius: 16,
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.inputBg,
+    gap: 8,
+  },
+  patientPickCard: {
+    padding: spacing.base,
+    borderRadius: 16,
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.inputBg,
+    gap: 8,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  footerMeta: {
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: '#F1EEF6',
+  },
+});

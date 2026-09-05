@@ -1,0 +1,12 @@
+<svg viewBox="0 0 460 110" width="560" height="134" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#0B7285" x="0" y="5"/>
+  <rect x="22" y="48" width="56" height="18" rx="3" fill="white"/>
+  <rect x="41" y="29" width="18" height="56" rx="3" fill="white"/>
+  <rect x="65" y="77" width="5" height="16" rx="2.5" fill="white" fill-opacity="0.35"/>
+  <rect x="73" y="69" width="5" height="24" rx="2.5" fill="white" fill-opacity="0.65"/>
+  <rect x="81" y="61" width="5" height="32" rx="2.5" fill="white"/>
+  <text x="118" y="70" font-family="'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif" font-size="58" letter-spacing="0.5" fill="#0B7285">
+    <tspan font-weight="700">Med</tspan>
+    <tspan font-weight="400">Track</tspan>
+  </text>
+</svg>

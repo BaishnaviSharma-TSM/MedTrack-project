@@ -1,0 +1,22 @@
+# secrets / env (keep examples)
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# deps & build
+node_modules/
+dist/
+.expo/
+web-build/
+
+# logs & OS
+*.log
+.DS_Store
+
+# keys / certs
+*.pem
+*.p12
+*.key
+*.jks
+credentials.json
