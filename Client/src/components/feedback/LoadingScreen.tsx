@@ -1,8 +1,9 @@
 import { View } from 'react-native';
 
-import { screenStyle } from '@/theme';
+import { useTheme } from '@/theme';
 
 /** Blank canvas while fonts or session load — logo lives only on LogoSplash. */
 export function LoadingScreen() {
-  return <View style={screenStyle} />;
+  const { colors } = useTheme();
+  return <View style={{ flex: 1, backgroundColor: colors.canvas }} />;
 }

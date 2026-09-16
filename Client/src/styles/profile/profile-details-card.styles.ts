@@ -8,33 +8,32 @@ export default StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E8E4EF',
-    padding: spacing.base,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
-  cardTitle: {
-    fontFamily: 'Nunito_700Bold',
-    fontSize: 16,
-    color: colors.foreground,
-    marginBottom: spacing.sm,
-  },
-  detailRow: {
+  cardTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.base,
-    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+    paddingBottom: spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: '#F1EEF6',
   },
-  detailLabel: {
-    fontFamily: 'DMSans_500Medium',
-    fontSize: 13,
-    color: colors.muted,
-  },
-  detailValue: {
-    flex: 1,
-    textAlign: 'right',
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 14,
+  cardTitle: {
+    fontFamily: 'Nunito_700Bold',
+    fontSize: 15,
     color: colors.foreground,
+  },
+  fields: {
+    gap: spacing.md,
+  },
+  fieldRow: {
+    flexDirection: 'column',
+    gap: spacing.md,
+  },
+  fieldRowWide: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.lg,
   },
 });

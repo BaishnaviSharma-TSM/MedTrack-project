@@ -1,44 +1,85 @@
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   View,
   type TextInputProps,
   type StyleProp,
+  type TextStyle,
   type ViewStyle,
 } from 'react-native';
 
-import { colors, inputStyle, spacing, textStyles } from '@/theme';
+import { inputStyle, spacing, textStyles, useTheme } from '@/theme';
 
 type ClayInputProps = TextInputProps & {
   label?: string;
+  required?: boolean;
   /** clay = recessed; flat = white field with soft shadow (login-style) */
   variant?: 'clay' | 'flat';
   containerStyle?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
 };
 
 export function ClayInput({
   label,
+  required = false,
   variant = 'clay',
   style,
   containerStyle,
+  labelStyle,
   ...props
 }: ClayInputProps) {
   const isFlat = variant === 'flat';
+  const { colors, isDark } = useTheme();
 
   return (
     <View style={[styles.wrapper, containerStyle]}>
-      {label && !isFlat ? (
-        <Text style={[textStyles.caption, styles.label]}>{label}</Text>
+      {label ? (
+        <Text
+          style={[
+            textStyles.caption,
+            isFlat
+              ? { color: colors.foreground, fontWeight: '500', letterSpacing: 0, textTransform: 'none', fontSize: 13 }
+              : { color: colors.muted, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase' },
+            labelStyle,
+          ]}
+        >
+          {label}
+          {required ? (
+            <Text style={{ color: colors.danger, fontFamily: 'DMSans_700Bold' }}>
+              {' *'}
+            </Text>
+          ) : null}
+        </Text>
       ) : null}
       <TextInput
         style={[
-          isFlat ? styles.flatInput : inputStyle,
+          isFlat
+            ? {
+                backgroundColor: isDark ? colors.inputBg : '#FFFFFF',
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: isDark ? colors.borderSubtle : '#E8E4EF',
+                height: 48,
+                paddingHorizontal: spacing.base,
+                fontFamily: 'DMSans_400Regular',
+                fontSize: 15,
+              }
+            : {
+                ...inputStyle,
+                backgroundColor: colors.inputBg,
+              },
           textStyles.body,
-          styles.input,
+          {
+            color: colors.foreground,
+            ...(Platform.OS === 'web'
+              ? ({ outlineStyle: 'none', outlineWidth: 0, boxShadow: 'none' } as object)
+              : null),
+          },
           style,
         ]}
-        placeholderTextColor={isFlat ? '#BDBDBD' : colors.muted}
+        placeholderTextColor={isDark ? '#5A6B7A' : isFlat ? '#BDBDBD' : colors.muted}
         {...props}
       />
     </View>
@@ -48,27 +89,5 @@ export function ClayInput({
 const styles = StyleSheet.create({
   wrapper: {
     gap: spacing.sm,
-  },
-  label: {
-    color: colors.muted,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
-  input: {
-    color: colors.foreground,
-  },
-  flatInput: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    height: 56,
-    paddingHorizontal: 20,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 16,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
   },
 });

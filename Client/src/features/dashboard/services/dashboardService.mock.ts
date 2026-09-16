@@ -56,13 +56,67 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     .filter((item) => item.count > 0)
     .sort((a, b) => b.count - a.count);
 
+  const visitsIn30Days = visitsLast30d.length;
+
+  /* ── Weekly rhythm (last 17 weeks, stacked by condition) ── */
+  const weeklyMap = new Map<string, Record<string, number>>();
+  const now = new Date();
+  for (let w = 16; w >= 0; w--) {
+    const weekStart = new Date(now);
+    weekStart.setDate(weekStart.getDate() - w * 7);
+    const key = `${weekStart.getDate()} ${weekStart.toLocaleString('default', { month: 'short' })}`;
+    weeklyMap.set(key, {});
+  }
+
+  for (const visit of visits) {
+    const vd = new Date(visit.visitDate);
+    const diffMs = now.getTime() - vd.getTime();
+    const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
+    if (diffWeeks >= 0 && diffWeeks <= 16) {
+      const weekStart = new Date(now);
+      weekStart.setDate(weekStart.getDate() - diffWeeks * 7);
+      const key = `${weekStart.getDate()} ${weekStart.toLocaleString('default', { month: 'short' })}`;
+      const bucket = weeklyMap.get(key);
+      if (bucket) {
+        const cond = visit.condition;
+        bucket[cond] = (bucket[cond] ?? 0) + 1;
+      }
+    }
+  }
+
+  const weeklyVisitRhythm = Array.from(weeklyMap.entries()).map(([weekLabel, byCondition]) => ({
+    weekLabel,
+    total: Object.values(byCondition).reduce((s, c) => s + c, 0),
+    byCondition,
+  }));
+
+  /* ── Last visit summary ── */
+  const sortedVisits = [...visits].sort(
+    (a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime(),
+  );
+  const lastVisit = sortedVisits[0];
+  const lastVisitSummary = lastVisit
+    ? (() => {
+        const matchedPatient = patients.find((p) => p.id === lastVisit.patientId);
+        const vDate = new Date(lastVisit.visitDate);
+        const dayDiff = Math.floor((now.getTime() - vDate.getTime()) / (1000 * 60 * 60 * 24));
+        const when = dayDiff === 0 ? 'today' : dayDiff === 1 ? 'yesterday' : `${dayDiff} days ago`;
+        return matchedPatient
+          ? `Your last visit was ${matchedPatient.name}, ${when}`
+          : `Last visit was ${when}`;
+      })()
+    : null;
+
   return {
     visitsToday,
     pendingFirstVisitCount: pendingPatients.length,
     totalPatients: patients.length,
     visitsThisWeek,
-    pendingPatients: pendingPatients.slice(0, 5),
+    visitsIn30Days,
+    pendingPatients: pendingPatients.slice(0, 3),
     recentVisits: visitRecords.slice(0, 5),
     visitsByCondition,
+    weeklyVisitRhythm,
+    lastVisitSummary,
   };
 }

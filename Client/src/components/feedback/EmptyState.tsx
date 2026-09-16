@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { colors, spacing, textStyles } from '@/theme';
+import { spacing, textStyles, useTheme } from '@/theme';
 
 type EmptyStateProps = {
   title: string;
@@ -9,31 +9,27 @@ type EmptyStateProps = {
 };
 
 export function EmptyState({ title, description, action }: EmptyStateProps) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={[textStyles.cardTitle, styles.title]}>{title}</Text>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.base,
+        padding: spacing.lg,
+      }}
+    >
+      <Text style={[textStyles.cardTitle, { color: colors.foreground, textAlign: 'center' }]}>
+        {title}
+      </Text>
       {description ? (
-        <Text style={[textStyles.body, styles.description]}>{description}</Text>
+        <Text style={[textStyles.body, { color: colors.muted, textAlign: 'center' }]}>
+          {description}
+        </Text>
       ) : null}
       {action}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.base,
-    padding: spacing.lg,
-  },
-  title: {
-    color: colors.foreground,
-    textAlign: 'center',
-  },
-  description: {
-    color: colors.muted,
-    textAlign: 'center',
-  },
-});

@@ -2,6 +2,9 @@
  * High-Fidelity Claymorphism — color tokens
  * Candy-shop palette with WCAG AA-friendly foreground contrast.
  */
+const BRAND_RGB = '11, 114, 133';
+const BRAND_HEX = '#0B7285';
+
 export const colors = {
   /** Canvas — very pale cool lavender-white (#F4F1FA) */
   canvas: '#F4F1FA',
@@ -23,13 +26,21 @@ export const colors = {
   inputBg: '#EFEBF5',
 
   brand: {
-    /** MedTrack logo / primary brand teal (#0B7285) */
-    primary: '#0B7285',
+    /** MedTrack primary brand teal — rgba(11, 114, 133, 1) */
+    primary: BRAND_HEX,
+    /** Tint utilities derived from brand RGB */
+    alpha03: `rgba(${BRAND_RGB}, 0.03)`,
+    alpha04: `rgba(${BRAND_RGB}, 0.04)`,
+    alpha06: `rgba(${BRAND_RGB}, 0.06)`,
+    alpha08: `rgba(${BRAND_RGB}, 0.08)`,
+    alpha10: `rgba(${BRAND_RGB}, 0.1)`,
+    alpha30: `rgba(${BRAND_RGB}, 0.3)`,
+    alpha35: `rgba(${BRAND_RGB}, 0.35)`,
   },
 
   accent: {
-    /** Hero violet — primary CTAs, links, brand (#7C3AED) */
-    primary: '#7C3AED',
+    /** Primary CTAs, links, active nav — brand teal */
+    primary: BRAND_HEX,
     /** Hot pink — gradients, secondary emphasis (#DB2777) */
     secondary: '#DB2777',
     /** Sky blue — informational elements (#0EA5E9) */
@@ -41,12 +52,12 @@ export const colors = {
   },
 
   gradient: {
-    /** Primary button: lighter violet → primary violet */
-    primaryStart: '#A78BFA',
-    primaryEnd: '#7C3AED',
+    /** Primary button: lighter teal → brand teal */
+    primaryStart: '#18A3B8',
+    primaryEnd: BRAND_HEX,
     /** Hero text gradient stops */
     textStart: '#332F3A',
-    textMid: '#7C3AED',
+    textMid: BRAND_HEX,
     textEnd: '#DB2777',
   },
 
@@ -73,13 +84,13 @@ export const colors = {
     ambient: '#CDC6D9',
     highlight: '#FFFFFF',
     cardDrop: 'rgba(160, 150, 180, 0.35)',
-    buttonDrop: 'rgba(139, 92, 246, 0.35)',
+    buttonDrop: `rgba(${BRAND_RGB}, 0.35)`,
     pressed: '#D9D4E3',
-    innerViolet: 'rgba(139, 92, 246, 0.08)',
+    innerBrand: `rgba(${BRAND_RGB}, 0.08)`,
   },
 
   /** Focus ring */
-  ring: 'rgba(124, 58, 237, 0.3)',
+  ring: `rgba(${BRAND_RGB}, 0.3)`,
 
   white: '#FFFFFF',
   black: '#000000',

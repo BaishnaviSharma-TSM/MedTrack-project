@@ -63,6 +63,43 @@ const CONDITIONS = [
       { key: 'chiefComplaint', label: 'Chief Complaint', fieldType: FieldType.Text },
     ],
   },
+  {
+    slug: 'asthma',
+    label: 'Asthma',
+    fields: [
+      { key: 'respiratoryRate', label: 'Respiratory Rate', fieldType: FieldType.Number, unit: 'breaths/min' },
+      { key: 'spo2', label: 'Oxygen Saturation', fieldType: FieldType.Number, unit: '%' },
+      { key: 'peakFlow', label: 'Peak Expiratory Flow', fieldType: FieldType.Number, unit: 'L/min' },
+      { key: 'pulse', label: 'Pulse Rate', fieldType: FieldType.Number, unit: 'bpm' },
+      { key: 'wheezing', label: 'Wheezing Present', fieldType: FieldType.Boolean },
+      { key: 'inhalerUsed', label: 'Inhaler Used Today', fieldType: FieldType.Boolean },
+    ],
+  },
+  {
+    slug: 'cardiac',
+    label: 'Cardiac Checkup',
+    fields: [
+      { key: 'systolic', label: 'Systolic BP', fieldType: FieldType.Number, unit: 'mmHg' },
+      { key: 'diastolic', label: 'Diastolic BP', fieldType: FieldType.Number, unit: 'mmHg' },
+      { key: 'pulse', label: 'Pulse Rate', fieldType: FieldType.Number, unit: 'bpm' },
+      { key: 'spo2', label: 'Oxygen Saturation', fieldType: FieldType.Number, unit: '%' },
+      { key: 'chestPainScore', label: 'Chest Pain Score', fieldType: FieldType.Number, unit: '0-10' },
+      { key: 'shortnessOfBreath', label: 'Shortness of Breath', fieldType: FieldType.Boolean },
+      { key: 'ecgNotes', label: 'ECG / Clinical Notes', fieldType: FieldType.Text },
+    ],
+  },
+  {
+    slug: 'anemia',
+    label: 'Anemia',
+    fields: [
+      { key: 'hemoglobin', label: 'Hemoglobin', fieldType: FieldType.Number, unit: 'g/dL' },
+      { key: 'pulse', label: 'Pulse Rate', fieldType: FieldType.Number, unit: 'bpm' },
+      { key: 'bloodPressure', label: 'Blood Pressure', fieldType: FieldType.Text, unit: 'mmHg' },
+      { key: 'weight', label: 'Weight', fieldType: FieldType.Number, unit: 'kg' },
+      { key: 'pallor', label: 'Pallor Present', fieldType: FieldType.Boolean },
+      { key: 'fatigue', label: 'Fatigue Reported', fieldType: FieldType.Boolean },
+    ],
+  },
 ];
 
 const NORMAL_RANGES = [
@@ -72,6 +109,10 @@ const NORMAL_RANGES = [
   { vitalKey: 'systolic', min: 90, max: 120, unit: 'mmHg' },
   { vitalKey: 'diastolic', min: 60, max: 80, unit: 'mmHg' },
   { vitalKey: 'fastingGlucose', min: 70, max: 100, unit: 'mg/dL' },
+  { vitalKey: 'respiratoryRate', min: 8, max: 60, unit: 'breaths/min' },
+  { vitalKey: 'peakFlow', min: 50, max: 800, unit: 'L/min' },
+  { vitalKey: 'chestPainScore', min: 0, max: 10, unit: '0-10' },
+  { vitalKey: 'hemoglobin', min: 3, max: 20, unit: 'g/dL' },
 ];
 
 @Injectable()

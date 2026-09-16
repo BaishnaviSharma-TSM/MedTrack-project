@@ -60,19 +60,20 @@ export const cardStyle: ViewStyle = {
 /** Recessed input shell */
 export const inputStyle: ViewStyle = {
   backgroundColor: colors.inputBg,
-  borderRadius: radii.button,
+  borderRadius: radii.input,
   height: sizes.input,
   paddingHorizontal: spacing.lg,
   ...shadows.clayPressed,
 };
 
-/** Primary gradient button shell (background via LinearGradient in components) */
+/** Shared action-button shell — no drop shadow */
 export const primaryButtonStyle: ViewStyle = {
   height: sizes.button,
+  minHeight: sizes.button,
   borderRadius: radii.button,
   alignItems: 'center',
   justifyContent: 'center',
-  ...shadows.clayButton,
+  ...shadows.none,
 };
 
 export default clayTheme;

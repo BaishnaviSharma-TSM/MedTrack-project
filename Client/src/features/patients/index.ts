@@ -3,6 +3,7 @@ export { usePatientRecords } from './hooks/usePatientRecords';
 export { createPatient, getPatientById, getPatients, searchPatients } from './services/patientService';
 export { getPatientRecords } from './services/patientRecordService';
 export { AddPatientWizard } from './components/AddPatientWizard';
+export { EditPatientWizard } from './components/EditPatientWizard';
 export { PatientInfoStep } from './components/PatientInfoStep';
 export { PatientFilters } from './components/PatientFilters';
 export { PatientRecordCard } from './components/PatientRecordCard';

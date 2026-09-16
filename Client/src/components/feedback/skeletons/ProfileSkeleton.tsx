@@ -11,12 +11,28 @@ export function ProfileSkeleton() {
       accessibilityLabel="Loading profile"
     >
       <View style={styles.identityCard}>
-        <ShimmerBone width={72} height={72} radius={36} />
         <View style={styles.wrap}>
-          <ShimmerBone width="70%" height={20} radius={6} />
-          <ShimmerBone width="50%" height={14} radius={6} />
-          <ShimmerBone width={88} height={22} radius={999} />
+          <ShimmerBone width="42%" height={20} radius={6} />
+          <ShimmerBone width="55%" height={14} radius={6} />
         </View>
+        <ShimmerBone width={96} height={36} radius={8} />
+        <ShimmerBone width={88} height={36} radius={8} />
+      </View>
+
+      <View style={styles.whiteCard}>
+        <ShimmerBone width="36%" height={16} radius={6} />
+        {Array.from({ length: 3 }).map((_, index) => (
+          <View key={index} style={styles.rowBetween}>
+            <View style={styles.wrap}>
+              <ShimmerBone width="30%" height={12} radius={6} />
+              <ShimmerBone height={42} radius={10} />
+            </View>
+            <View style={styles.wrap}>
+              <ShimmerBone width="30%" height={12} radius={6} />
+              <ShimmerBone height={42} radius={10} />
+            </View>
+          </View>
+        ))}
       </View>
 
       <View style={styles.row}>
@@ -29,19 +45,6 @@ export function ProfileSkeleton() {
           <ShimmerBone width={72} height={12} radius={6} />
         </View>
       </View>
-
-      <View style={styles.whiteCard}>
-        <ShimmerBone width="40%" height={16} radius={6} />
-        {Array.from({ length: 4 }).map((_, index) => (
-          <View key={index} style={styles.detailRow}>
-            <ShimmerBone width="30%" height={13} radius={6} />
-            <ShimmerBone width="40%" height={14} radius={6} />
-          </View>
-        ))}
-      </View>
-
-      <ShimmerBone height={56} radius={20} />
-      <ShimmerBone height={56} radius={20} />
     </View>
   );
 }

@@ -109,8 +109,8 @@ export const textStyles = {
 
   button: {
     fontFamily: fontFamilies.body.bold,
-    fontSize: fontSizes.base,
-    lineHeight: fontSizes.base * lineHeights.normal,
+    fontSize: 13,
+    lineHeight: 18,
     letterSpacing: letterSpacing.wide,
   } satisfies TextStyle,
 } as const;

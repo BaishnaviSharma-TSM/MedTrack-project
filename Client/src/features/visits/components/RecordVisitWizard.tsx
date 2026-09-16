@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -13,6 +13,8 @@ import { PageHeader } from '@/components/layout';
 import { ClayButton, ClayInput } from '@/components/ui';
 import { useConditions } from '@/features/conditions/hooks/useConditions';
 import { getPatientById } from '@/features/patients/services/patientService';
+import { useDocumentTitle, useIsWideLayout } from '@/hooks';
+import { useWebPageMeta } from '@/hooks/useWebPageMeta';
 import type { Patient } from '@/types';
 import styles from '@/styles/visits/record-visit-wizard.styles';
 
@@ -37,6 +39,7 @@ type RecordVisitWizardProps = {
  */
 export function RecordVisitWizard({ initialPatientId }: RecordVisitWizardProps) {
   const router = useRouter();
+  const isWideLayout = useIsWideLayout();
   const params = useLocalSearchParams<{ patientId?: string }>();
   const patientId = initialPatientId ?? params.patientId;
 
@@ -171,103 +174,158 @@ export function RecordVisitWizard({ initialPatientId }: RecordVisitWizardProps) 
       : []),
   ];
 
+  useDocumentTitle('Record Visit');
+  useWebPageMeta({
+    title: 'Record Visit',
+    showBack: true,
+    onBack: handleBack,
+  });
+
+  const formBody = (
+    <>
+      <VisitSelectionSummary items={summaryItems} isWideLayout={isWideLayout} />
+
+      {step === 1 ? (
+        <PatientSelectStep
+          selectedPatientId={selectedPatient?.id ?? ''}
+          error={patientError}
+          onSelect={handlePatientSelect}
+          isWideLayout={isWideLayout}
+        />
+      ) : null}
+
+      {step === 2 ? (
+        isConditionsLoading ? (
+          <ConditionGridSkeleton />
+        ) : (
+          <ConditionSelectStep
+            conditions={conditions}
+            value={condition}
+            error={conditionError}
+            onChange={handleConditionSelect}
+            isWideLayout={isWideLayout}
+          />
+        )
+      ) : null}
+
+      {step === 3 && selectedCondition ? (
+        <View style={isWideLayout ? styles.vitalsStack : undefined}>
+          <DynamicVitalsForm
+            condition={selectedCondition}
+            values={vitalValues}
+            errors={vitalErrors}
+            onChange={updateVital}
+            title={`${getConditionLabel(condition)} vitals`}
+            isWideLayout={isWideLayout}
+          />
+
+          <View style={isWideLayout ? styles.notesBlockWide : styles.notesBlock}>
+            <ClayInput
+              label="Visit notes (optional)"
+              labelStyle={styles.notesLabel}
+              placeholder="Observations, advice, follow-up plan"
+              value={notes}
+              onChangeText={setNotes}
+              multiline
+              numberOfLines={4}
+              style={styles.notesInput}
+              variant={isWideLayout ? 'flat' : 'clay'}
+            />
+          </View>
+        </View>
+      ) : null}
+    </>
+  );
+
+  const actionButton = (() => {
+    const buttonStyle = isWideLayout ? styles.cardActionButton : undefined;
+
+    if (step === 1) {
+      return (
+        <ClayButton
+          label="Confirm Patient"
+          fullWidth={!isWideLayout}
+          onPress={handleConfirmPatient}
+          style={buttonStyle}
+        />
+      );
+    }
+    if (step === 2) {
+      return (
+        <ClayButton
+          label="Continue"
+          fullWidth={!isWideLayout}
+          onPress={handleSaveCondition}
+          style={buttonStyle}
+        />
+      );
+    }
+    return (
+      <ClayButton
+        label={isSubmitting ? 'Saving…' : 'Save Visit'}
+        fullWidth={!isWideLayout}
+        onPress={handleSaveVisit}
+        disabled={isSubmitting}
+        style={buttonStyle}
+      />
+    );
+  })();
+
+  const errorBanner: ReactNode = submitError ? (
+    <View style={styles.errorBanner}>
+      <Text style={styles.errorBannerText}>{submitError}</Text>
+    </View>
+  ) : null;
+
   return (
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <PageHeader title="Record Visit" onBack={handleBack} background="canvas" />
+      {!isWideLayout ? (
+        <PageHeader title="Record Visit" onBack={handleBack} background="canvas" />
+      ) : null}
 
-      <View style={styles.stepperWrap}>
-        <VisitStepper current={step} highestReached={highestReached} onStepPress={setStep} />
-      </View>
-
-      <ScrollView
-        style={styles.flex}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <VisitSelectionSummary items={summaryItems} />
-
-        {step === 1 ? (
-          <PatientSelectStep
-            selectedPatientId={selectedPatient?.id ?? ''}
-            error={patientError}
-            onSelect={handlePatientSelect}
-          />
-        ) : null}
-
-        {step === 2 ? (
-          isConditionsLoading ? (
-            <ConditionGridSkeleton />
-          ) : (
-            <ConditionSelectStep
-              conditions={conditions}
-              value={condition}
-              error={conditionError}
-              onChange={handleConditionSelect}
-            />
-          )
-        ) : null}
-
-        {step === 3 && selectedCondition ? (
-          <>
-            <DynamicVitalsForm
-              condition={selectedCondition}
-              values={vitalValues}
-              errors={vitalErrors}
-              onChange={updateVital}
-              title={`${getConditionLabel(condition)} vitals`}
-            />
-
-            <View style={styles.notesBlock}>
-              <ClayInput
-                label="Visit notes (optional)"
-                placeholder="Observations, advice, follow-up plan"
-                value={notes}
-                onChangeText={setNotes}
-                multiline
-                numberOfLines={4}
-                style={styles.notesInput}
-              />
-            </View>
-          </>
-        ) : null}
-      </ScrollView>
-
-      <View style={styles.footer}>
-        {submitError ? (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorBannerText}>{submitError}</Text>
+      {isWideLayout ? (
+        <View style={styles.wideBody}>
+          <View style={styles.wideTopStepper}>
+            <VisitStepper current={step} highestReached={highestReached} onStepPress={setStep} />
           </View>
-        ) : null}
 
-        {step === 1 ? (
-          <ClayButton
-            label="Confirm Patient"
-            onPress={handleConfirmPatient}
-            style={styles.primaryButton}
-          />
-        ) : null}
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={styles.wideFormScroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.formCard}>
+              {formBody}
+              {errorBanner}
+              <View style={styles.cardFooterActions}>{actionButton}</View>
+            </View>
+          </ScrollView>
+        </View>
+      ) : (
+        <>
+          <View style={styles.stepperWrap}>
+            <VisitStepper current={step} highestReached={highestReached} onStepPress={setStep} />
+          </View>
 
-        {step === 2 ? (
-          <ClayButton
-            label="Save Condition & Load Form"
-            onPress={handleSaveCondition}
-            style={styles.primaryButton}
-          />
-        ) : null}
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {formBody}
+          </ScrollView>
 
-        {step === 3 ? (
-          <ClayButton
-            label={isSubmitting ? 'Saving…' : 'Save Visit'}
-            onPress={handleSaveVisit}
-            disabled={isSubmitting}
-            style={styles.primaryButton}
-          />
-        ) : null}
-      </View>
+          <View style={styles.footer}>
+            {errorBanner}
+            {actionButton}
+          </View>
+        </>
+      )}
     </KeyboardAvoidingView>
   );
 }

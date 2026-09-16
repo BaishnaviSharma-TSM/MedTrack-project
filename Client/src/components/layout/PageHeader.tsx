@@ -1,19 +1,16 @@
 import { Feather } from '@expo/vector-icons';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Platform, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import styles from '@/styles/layout/page-header.styles';
-import { colors } from '@/theme';
+import { fontFamilies, fontSizes, spacing, useTheme } from '@/theme';
 
 type PageHeaderProps = {
   title: string;
   onBack?: () => void;
   showBack?: boolean;
-  /** white = default; canvas = lavender screen; transparent = clay/gray tab screens */
   background?: 'white' | 'canvas' | 'transparent';
 };
 
-/** Full-bleed page header — extends into the status bar */
 export function PageHeader({
   title,
   onBack,
@@ -21,19 +18,42 @@ export function PageHeader({
   background = 'white',
 }: PageHeaderProps) {
   const insets = useSafeAreaInsets();
-  const backgroundStyle =
+  const { colors, isDark } = useTheme();
+
+  const bgColor =
     background === 'canvas'
-      ? styles.containerCanvas
+      ? colors.canvas
       : background === 'transparent'
-        ? styles.containerTransparent
-        : undefined;
+        ? 'transparent'
+        : isDark
+          ? colors.cardBg
+          : '#FFFFFF';
 
   return (
-    <View style={[styles.container, backgroundStyle, { paddingTop: insets.top }]}>
-      <View style={styles.row}>
+    <View
+      style={{
+        backgroundColor: bgColor,
+        borderBottomWidth: background === 'transparent' ? 0 : 1,
+        borderBottomColor: colors.borderMuted,
+        paddingTop: insets.top,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: spacing.base,
+          paddingVertical: spacing.md,
+          minHeight: 52,
+        }}
+      >
         {showBack && onBack ? (
           <Pressable
-            style={styles.backButton}
+            style={{
+              marginRight: spacing.sm,
+              padding: spacing.xs,
+              ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
+            }}
             onPress={onBack}
             accessibilityRole="button"
             accessibilityLabel="Go back"
@@ -42,7 +62,15 @@ export function PageHeader({
             <Feather name="chevron-left" size={26} color={colors.muted} />
           </Pressable>
         ) : null}
-        <Text style={styles.title}>{title}</Text>
+        <Text
+          style={{
+            fontFamily: fontFamilies.heading.bold,
+            fontSize: fontSizes.xl,
+            color: colors.foreground,
+          }}
+        >
+          {title}
+        </Text>
       </View>
     </View>
   );

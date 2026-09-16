@@ -19,6 +19,50 @@ export default StyleSheet.create({
   fieldGroup: {
     gap: spacing.md,
   },
+  formCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E8E4EF',
+    padding: spacing.lg,
+    gap: spacing.lg,
+    width: '100%',
+  },
+  cardFooterActions: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  errorBanner: {
+    padding: spacing.md,
+    borderRadius: 12,
+    backgroundColor: 'rgba(220, 38, 38, 0.08)',
+  },
+  errorBannerText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 14,
+    color: '#DC2626',
+  },
+  fieldLabel: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 15,
+    color: colors.foreground,
+    marginBottom: spacing.xs,
+  },
+  fieldBlock: {
+    gap: spacing.xs,
+  },
+  twoColumnRow: {
+    flexDirection: 'row',
+    gap: spacing.lg,
+    alignItems: 'flex-start',
+  },
+  columnField: {
+    flex: 1,
+    minWidth: 0,
+  },
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',

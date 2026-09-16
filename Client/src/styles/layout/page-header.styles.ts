@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -30,6 +30,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     paddingLeft: spacing.sm,
+    ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
   },
   sideSpacer: {
     width: 44,

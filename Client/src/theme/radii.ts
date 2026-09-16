@@ -1,9 +1,11 @@
 /**
- * Super-rounded radii — minimum 20px per clay design rules.
+ * Shared radii. Buttons match the compact New Patient CTA (10px).
  */
 export const radii = {
-  /** Buttons & inputs */
-  button: 20,
+  /** Compact action buttons */
+  button: 10,
+  /** Recessed clay inputs */
+  input: 20,
   /** Medium elements — pills, blog cards */
   medium: 24,
   /** Standard cards (default) */

@@ -2,7 +2,10 @@ export type ConditionType =
   | 'fever'
   | 'hypertension'
   | 'diabetes'
-  | 'general';
+  | 'general'
+  | 'asthma'
+  | 'cardiac'
+  | 'anemia';
 
 export type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -20,6 +23,9 @@ export interface Visit {
   vitals: VitalSign[];
   severity?: SeverityLevel;
   notes?: string;
+  prescription?: string;
+  followUp?: string;
+  doctorName?: string;
   visitDate: string;
   createdAt: string;
 }

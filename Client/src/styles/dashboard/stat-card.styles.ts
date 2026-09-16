@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -12,6 +12,7 @@ export default StyleSheet.create({
     borderColor: '#E8E4EF',
     padding: spacing.base,
     gap: 4,
+    ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
   },
   cardPressed: {
     opacity: 0.85,

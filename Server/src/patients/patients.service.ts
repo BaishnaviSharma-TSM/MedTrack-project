@@ -30,6 +30,7 @@ export class PatientsService {
         age: dto.age,
         gender: dto.gender,
         contactNumber: dto.contactNumber.trim(),
+        address: dto.address?.trim() ?? '',
         uniqueId,
       }),
     );
@@ -123,6 +124,9 @@ export class PatientsService {
     if (dto.contactNumber !== undefined) {
       patient.contactNumber = dto.contactNumber.trim();
     }
+    if (dto.address !== undefined) {
+      patient.address = dto.address.trim();
+    }
 
     const saved = await this.patientRepository.save(patient);
 
@@ -170,6 +174,7 @@ export class PatientsService {
       age: patient.age,
       gender: patient.gender,
       contactNumber: patient.contactNumber,
+      address: patient.address ?? '',
       uniqueId: patient.uniqueId,
       createdAt: patient.createdAt.toISOString(),
       updatedAt: patient.updatedAt.toISOString(),

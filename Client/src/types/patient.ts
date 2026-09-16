@@ -4,6 +4,7 @@ export interface Patient {
   age: number;
   gender: 'male' | 'female' | 'other';
   contactNumber: string;
+  address: string;
   uniqueId: string;
   createdAt: string;
   updatedAt: string;

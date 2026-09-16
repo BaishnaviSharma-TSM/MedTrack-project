@@ -1,42 +1,106 @@
-import { Feather } from '@expo/vector-icons';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Feather } from "@expo/vector-icons";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
-import { PatientProfileSkeleton } from '@/components/feedback';
-import { PageHeader, ScreenContainer } from '@/components/layout';
-import { ClayButton } from '@/components/ui';
-import { getPatientById } from '@/features/patients/services/patientService';
-import { getVisitsByPatient } from '@/features/visits/services/visitService';
-import { getConditionLabel } from '@/features/visits/services/visitRecordService';
-import { buildVitalsSummary } from '@/features/visits/utils/buildVitalsSummary';
-import type { Patient, Visit } from '@/types';
-import { formatDisplayDate } from '@/utils/formatDisplayDate';
-import styles from '@/styles/screens/patient-profile.styles';
-import { colors } from '@/theme';
+import { PatientProfileSkeleton } from "@/components/feedback";
+import { ScreenContainer, ScreenLayout } from "@/components/layout";
+import { VisitHistoryTable } from "@/features/visits/components/VisitHistoryTable";
+import { VisitVitalsChips } from "@/features/visits/components/VisitVitalsChips";
+import { ClayButton } from "@/components/ui";
+import { getPatientById } from "@/features/patients/services/patientService";
+import { getVisitsByPatient } from "@/features/visits/services/visitService";
+import { getConditionLabel } from "@/features/visits/services/visitRecordService";
+import { useDocumentTitle, useIsWideLayout } from "@/hooks";
+import type { Patient, Visit } from "@/types";
+import { formatDisplayDate } from "@/utils/formatDisplayDate";
+import baseStyles from "@/styles/screens/patient-profile.styles";
+import wideStyles from "@/styles/layout/wide-layout.styles";
+import { useTheme } from "@/theme";
 
 function formatGender(gender: string) {
   return gender.charAt(0).toUpperCase() + gender.slice(1);
 }
 
-type DetailRowProps = { label: string; value: string };
+type DetailFieldProps = {
+  icon: keyof typeof Feather.glyphMap;
+  label: string;
+  value: string;
+  numberOfLines?: number;
+};
 
-function DetailRow({ label, value }: DetailRowProps) {
+function DetailField({ icon, label, value, numberOfLines = 2 }: DetailFieldProps) {
+  const { colors } = useTheme();
   return (
-    <View style={styles.detailRow}>
-      <Text style={styles.detailLabel}>{label}</Text>
-      <Text style={styles.detailValue}>{value}</Text>
+    <View style={baseStyles.detailField}>
+      <View
+        style={[baseStyles.detailIconWrap, { backgroundColor: colors.brand.alpha06 }]}
+      >
+        <Feather name={icon} size={15} color={colors.brand.primary} />
+      </View>
+      <View style={baseStyles.detailTextWrap}>
+        <Text style={[baseStyles.detailLabel, { color: colors.muted }]}>{label}</Text>
+        <Text
+          style={[baseStyles.detailValue, { color: colors.foreground }]}
+          numberOfLines={numberOfLines}
+        >
+          {value}
+        </Text>
+      </View>
     </View>
   );
 }
 
-/** PRD 2.3 — Full patient details, and 3.4 — visit history in chronological order. */
+type StatCardProps = {
+  icon: keyof typeof Feather.glyphMap;
+  value: string;
+  label: string;
+  bgColor: string;
+  iconColor: string;
+};
+
+function StatCard({ icon, value, label, bgColor, iconColor }: StatCardProps) {
+  const { colors, isDark } = useTheme();
+  return (
+    <View
+      style={[
+        baseStyles.statCard,
+        {
+          backgroundColor: isDark ? colors.cardGlass : colors.cardGlassStrong,
+          borderWidth: isDark ? 1 : 0,
+          borderColor: isDark ? colors.borderSubtle : 'transparent',
+        },
+      ]}
+    >
+      <View style={[baseStyles.statIconWrap, { backgroundColor: bgColor }]}>
+        <Feather name={icon} size={17} color={iconColor} />
+      </View>
+      <Text style={[baseStyles.statValue, { color: colors.foreground }]} numberOfLines={1}>
+        {value}
+      </Text>
+      <Text style={[baseStyles.statLabel, { color: colors.muted }]}>{label}</Text>
+    </View>
+  );
+}
+
+function splitDate(dateStr: string): { day: string; monthYear: string } {
+  const parts = dateStr.split(" ");
+  if (parts.length >= 2) {
+    return { day: parts[0], monthYear: parts.slice(1).join(" ") };
+  }
+  return { day: dateStr, monthYear: "" };
+}
+
 export default function PatientProfileScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const isWideLayout = useIsWideLayout();
+  const { colors, isDark } = useTheme();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [visits, setVisits] = useState<Visit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  useDocumentTitle("Patient Details");
 
   useFocusEffect(
     useCallback(() => {
@@ -61,100 +125,228 @@ export default function PatientProfileScreen() {
 
   const lastVisit = visits[0];
 
+  const themedCard = {
+    backgroundColor: isDark ? colors.cardGlass : colors.cardGlassStrong,
+    borderWidth: isDark ? 1 : 0,
+    borderColor: isDark ? colors.borderSubtle : 'transparent',
+  };
+
+  const recordVisitRoute = patient
+    ? `/(app)/visits/new?patientId=${patient.id}`
+    : undefined;
+
   return (
     <ScreenContainer fullWidth>
-      <PageHeader title="Patient Profile" onBack={() => router.back()} background="canvas" />
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <ScreenLayout
+        title="Patient Details"
+        showBack
+        onBack={() => router.back()}
+        headerBackground="canvas"
       >
-        {isLoading ? (
-          <PatientProfileSkeleton />
-        ) : !patient ? (
-          <Text style={styles.muted}>Patient not found.</Text>
-        ) : (
-          <>
-            <View style={styles.identityCard}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{patient.name.charAt(0).toUpperCase()}</Text>
-              </View>
-              <View style={styles.identityText}>
-                <Text style={styles.patientName}>{patient.name}</Text>
-                <Text style={styles.patientId}>{patient.uniqueId}</Text>
-              </View>
-            </View>
+        <ScrollView
+          style={baseStyles.scroll}
+          contentContainerStyle={[
+            baseStyles.scrollContent,
+            isWideLayout && wideStyles.contentContainer,
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {isLoading ? (
+            <PatientProfileSkeleton />
+          ) : !patient ? (
+            <Text style={[baseStyles.muted, { color: colors.muted }]}>
+              Patient not found.
+            </Text>
+          ) : (
+            <View style={baseStyles.pageStack}>
+              <View style={[baseStyles.heroCard, themedCard]}>
+                <View style={[baseStyles.heroBrandStrip, { backgroundColor: colors.brand.primary }]} />
+                <View style={baseStyles.heroHeaderRow}>
+                  <View style={baseStyles.heroInner}>
+                    <View style={baseStyles.avatar}>
+                      <Text style={baseStyles.avatarText}>
+                        {patient.name.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={baseStyles.heroTextWrap}>
+                      <Text style={[baseStyles.patientName, { color: colors.foreground }]}>
+                        {patient.name}
+                      </Text>
+                      <View style={[baseStyles.idBadge, { backgroundColor: colors.brand.alpha08 }]}>
+                        <Feather name="hash" size={10} color={colors.brand.primary} />
+                        <Text style={[baseStyles.idBadgeText, { color: colors.brand.primary }]}>
+                          {patient.uniqueId}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <ClayButton
+                    label="Edit Patient"
+                    variant="outline"
+                    icon="edit-2"
+                    onPress={() => router.push(`/(app)/patients/${patient.id}/edit`)}
+                  />
+                </View>
 
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>{visits.length}</Text>
-                <Text style={styles.statLabel}>Total visits</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>
-                  {lastVisit ? formatDisplayDate(lastVisit.visitDate) : '—'}
-                </Text>
-                <Text style={styles.statLabel}>Last visit</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue} numberOfLines={1}>
-                  {lastVisit ? getConditionLabel(lastVisit.condition) : '—'}
-                </Text>
-                <Text style={styles.statLabel}>Last condition</Text>
-              </View>
-            </View>
-
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Patient details</Text>
-              <DetailRow label="Full name" value={patient.name} />
-              <DetailRow label="Patient ID" value={patient.uniqueId} />
-              <DetailRow label="Age" value={`${patient.age} yrs`} />
-              <DetailRow label="Gender" value={formatGender(patient.gender)} />
-              <DetailRow label="Contact" value={patient.contactNumber} />
-              <DetailRow label="Registered on" value={formatDisplayDate(patient.createdAt)} />
-            </View>
-
-            <ClayButton
-              label="Record Visit"
-              onPress={() => router.push(`/(app)/visits/new?patientId=${patient.id}`)}
-              style={styles.recordButton}
-            />
-
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Visit history</Text>
-              <Text style={styles.sectionCount}>{visits.length}</Text>
-            </View>
-
-            {visits.length === 0 ? (
-              <Text style={styles.muted}>
-                No visits recorded yet. Tap Record Visit to log the first one.
-              </Text>
-            ) : (
-              visits.map((visit) => (
-                <Pressable
-                  key={visit.id}
-                  style={styles.historyCard}
-                  onPress={() => router.push(`/(app)/visits/${visit.id}`)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Open visit from ${formatDisplayDate(visit.visitDate)}`}
-                >
-                  <View style={styles.historyMain}>
-                    <Text style={styles.historyDate}>{formatDisplayDate(visit.visitDate)}</Text>
-                    <Text style={styles.historyCondition}>
-                      {getConditionLabel(visit.condition)}
-                    </Text>
-                    <Text style={styles.historyVitals} numberOfLines={2}>
-                      {buildVitalsSummary(visit.vitals)}
+                <View style={[baseStyles.detailsDivider, { borderTopColor: colors.borderMuted }]}>
+                  <View style={baseStyles.detailsHeader}>
+                    <Feather name="file-text" size={18} color={colors.brand.primary} />
+                    <Text style={[baseStyles.detailsTitle, { color: colors.foreground }]}>
+                      Patient details
                     </Text>
                   </View>
-                  <Feather name="chevron-right" size={18} color={colors.muted} />
-                </Pressable>
-              ))
-            )}
-          </>
-        )}
-      </ScrollView>
+                  <View style={baseStyles.detailsGrid}>
+                    <View
+                      style={[
+                        baseStyles.detailPairRow,
+                        { borderBottomColor: isDark ? colors.borderMuted : '#F1EEF6' },
+                      ]}
+                    >
+                      <DetailField icon="calendar" label="Age" value={`${patient.age} yrs`} />
+                      <DetailField
+                        icon="users"
+                        label="Gender"
+                        value={formatGender(patient.gender)}
+                      />
+                    </View>
+                    <View
+                      style={[
+                        baseStyles.detailPairRow,
+                        { borderBottomColor: isDark ? colors.borderMuted : '#F1EEF6' },
+                      ]}
+                    >
+                      <DetailField icon="phone" label="Contact" value={patient.contactNumber} />
+                      <DetailField
+                        icon="map-pin"
+                        label="Address"
+                        value={patient.address?.trim() || '—'}
+                        numberOfLines={3}
+                      />
+                    </View>
+                    <View style={[baseStyles.detailPairRow, baseStyles.detailPairRowLast]}>
+                      <DetailField
+                        icon="clock"
+                        label="Registered on"
+                        value={formatDisplayDate(patient.createdAt)}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              <View style={baseStyles.statsRow}>
+                <StatCard
+                  icon="activity"
+                  value={String(visits.length)}
+                  label="Total visits"
+                  bgColor={isDark ? 'rgba(14, 165, 233, 0.2)' : 'rgba(14, 165, 233, 0.12)'}
+                  iconColor={colors.accent.tertiary}
+                />
+                <StatCard
+                  icon="calendar"
+                  value={lastVisit ? formatDisplayDate(lastVisit.visitDate) : "—"}
+                  label="Last visit"
+                  bgColor={isDark ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.12)'}
+                  iconColor={colors.accent.success}
+                />
+                <StatCard
+                  icon="clipboard"
+                  value={lastVisit ? getConditionLabel(lastVisit.condition) : "—"}
+                  label="Last condition"
+                  bgColor={isDark ? 'rgba(245, 158, 11, 0.2)' : 'rgba(245, 158, 11, 0.12)'}
+                  iconColor={colors.accent.warning}
+                />
+              </View>
+
+              <View style={[baseStyles.historySection, themedCard]}>
+                <View style={baseStyles.sectionHeaderWrap}>
+                  <View style={baseStyles.sectionHeaderLeft}>
+                    <Feather name="clock" size={18} color={colors.brand.primary} />
+                    <Text style={[baseStyles.sectionTitle, { color: colors.foreground }]}>
+                      Visit history
+                    </Text>
+                    <Text style={baseStyles.sectionCount}>{visits.length}</Text>
+                  </View>
+                  <View style={baseStyles.sectionHeaderRight}>
+                    <ClayButton
+                      label="Record Visit"
+                      icon="activity"
+                      onPress={() => recordVisitRoute && router.push(recordVisitRoute)}
+                    />
+                  </View>
+                </View>
+
+                {visits.length === 0 ? (
+                  <View style={baseStyles.emptyWrap}>
+                    <Feather name="inbox" size={32} color={colors.brand.alpha30} />
+                    <Text style={[baseStyles.emptyText, { color: colors.muted }]}>
+                      No visits recorded yet.{"\n"}Tap Record Visit to log the first one.
+                    </Text>
+                  </View>
+                ) : isWideLayout ? (
+                  <View style={baseStyles.tableWrap}>
+                    <VisitHistoryTable visits={visits} />
+                  </View>
+                ) : (
+                  <View style={baseStyles.historyListWrap}>
+                    {visits.map((visit) => {
+                      const dateParts = splitDate(formatDisplayDate(visit.visitDate));
+                      return (
+                        <Pressable
+                          key={visit.id}
+                          style={[
+                            baseStyles.historyCard,
+                            {
+                              backgroundColor: isDark ? colors.surfaceElevated : '#FFFFFF',
+                              borderColor: isDark ? colors.borderSubtle : '#EEEAF4',
+                            },
+                          ]}
+                          onPress={() => router.push(`/(app)/visits/${visit.id}`)}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Open visit from ${formatDisplayDate(visit.visitDate)}`}
+                        >
+                          <View style={baseStyles.historyDateCol}>
+                            <Text style={[baseStyles.historyDay, { color: colors.foreground }]}>
+                              {dateParts.day}
+                            </Text>
+                            <Text style={[baseStyles.historyMonthYear, { color: colors.muted }]}>
+                              {dateParts.monthYear}
+                            </Text>
+                          </View>
+                          <View
+                            style={[
+                              baseStyles.historyDivider,
+                              { backgroundColor: isDark ? colors.borderSubtle : '#EEEAF4' },
+                            ]}
+                          />
+                          <View style={baseStyles.historyMain}>
+                            <Text style={[baseStyles.historyCondition, { color: colors.foreground }]}>
+                              {getConditionLabel(visit.condition)}
+                            </Text>
+                            <VisitVitalsChips vitals={visit.vitals} max={2} />
+                          </View>
+                          <View
+                            style={[
+                              baseStyles.historyChevron,
+                              { backgroundColor: colors.brand.alpha06 },
+                            ]}
+                          >
+                            <Feather
+                              name="chevron-right"
+                              size={15}
+                              color={colors.brand.primary}
+                            />
+                          </View>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      </ScreenLayout>
     </ScreenContainer>
   );
 }

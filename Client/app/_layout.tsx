@@ -3,7 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 
 import { ErrorState, LoadingScreen } from '@/components/feedback';
 import { AppProviders } from '@/providers';
-import { colors, useClayFonts } from '@/theme';
+import { useClayFonts } from '@/theme';
+
+import { ThemedRootStack } from '@/components/layout/ThemedRootStack';
 
 export default function RootLayout() {
   const { loaded, error } = useClayFonts();
@@ -20,8 +22,7 @@ export default function RootLayout() {
 
   return (
     <AppProviders>
-      <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }} />
+      <ThemedRootStack />
     </AppProviders>
   );
 }

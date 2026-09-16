@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -14,12 +14,25 @@ export default StyleSheet.create({
   list: {
     gap: spacing.sm,
   },
+  listWide: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   patientCard: {
     padding: spacing.base,
     borderRadius: 16,
     backgroundColor: colors.white,
     borderWidth: 2,
     borderColor: colors.inputBg,
+    ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
+  },
+  patientCardWide: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 240,
+    minWidth: 200,
+    maxWidth: 360,
+    backgroundColor: colors.canvas,
   },
   patientCardSelected: {
     borderColor: colors.brand.primary,

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors, spacing } from '@/theme';
+import { colors, fontFamilies, spacing } from '@/theme';
 
 export default StyleSheet.create({
   row: {
@@ -13,22 +13,22 @@ export default StyleSheet.create({
     gap: 4,
   },
   date: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fontFamilies.body.regular,
     fontSize: 12,
     color: colors.muted,
   },
   patientName: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fontFamilies.heading.bold,
     fontSize: 15,
     color: colors.foreground,
   },
   condition: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: fontFamilies.body.medium,
     fontSize: 13,
     color: colors.brand.primary,
   },
   vitals: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fontFamilies.body.regular,
     fontSize: 12,
     color: colors.muted,
   },

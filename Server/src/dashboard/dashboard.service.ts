@@ -74,12 +74,13 @@ export class DashboardService {
         pendingFirstVisitCount: pendingPatients.length,
         totalPatients: patients.length,
         visitsThisWeek,
-        pendingPatients: pendingPatients.slice(0, 5).map((patient) => ({
+        pendingPatients: pendingPatients.slice(0, 3).map((patient) => ({
           id: patient.id,
           name: patient.name,
           age: patient.age,
           gender: patient.gender,
           contactNumber: patient.contactNumber,
+          address: patient.address ?? '',
           uniqueId: patient.uniqueId,
           createdAt: patient.createdAt.toISOString(),
           updatedAt: patient.updatedAt.toISOString(),
@@ -101,6 +102,7 @@ export class DashboardService {
             age: visit.patient.age,
             gender: visit.patient.gender,
             contactNumber: visit.patient.contactNumber,
+            address: visit.patient.address ?? '',
             uniqueId: visit.patient.uniqueId,
             createdAt: visit.patient.createdAt.toISOString(),
             updatedAt: visit.patient.updatedAt.toISOString(),
@@ -117,6 +119,9 @@ export class DashboardService {
       hypertension: 'Hypertension',
       diabetes: 'Diabetes Checkup',
       general: 'General Checkup',
+      asthma: 'Asthma',
+      cardiac: 'Cardiac Checkup',
+      anemia: 'Anemia',
     };
 
     return labels[slug] ?? slug;

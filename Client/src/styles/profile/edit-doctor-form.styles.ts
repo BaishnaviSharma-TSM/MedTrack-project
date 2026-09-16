@@ -8,29 +8,33 @@ export default StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E8E4EF',
-    padding: spacing.base,
+    padding: spacing.lg,
     gap: spacing.md,
+  },
+  cardTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingBottom: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1EEF6',
   },
   cardTitle: {
     fontFamily: 'Nunito_700Bold',
-    fontSize: 16,
+    fontSize: 15,
     color: colors.foreground,
   },
-  readOnlyBlock: {
-    gap: 4,
-    paddingVertical: spacing.xs,
+  fields: {
+    gap: spacing.md,
   },
-  readOnlyLabel: {
-    fontFamily: 'DMSans_500Medium',
-    fontSize: 12,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: colors.muted,
+  fieldRow: {
+    flexDirection: 'column',
+    gap: spacing.md,
   },
-  readOnlyValue: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 14,
-    color: colors.foreground,
+  fieldRowWide: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.lg,
   },
   errorText: {
     fontFamily: 'DMSans_500Medium',

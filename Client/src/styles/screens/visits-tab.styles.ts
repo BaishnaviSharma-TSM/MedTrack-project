@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -41,10 +41,6 @@ export default StyleSheet.create({
     color: colors.muted,
     lineHeight: 19,
   },
-  recordButton: {
-    backgroundColor: colors.brand.primary,
-    marginTop: spacing.xs,
-  },
   filtersBlock: {
     gap: spacing.base,
     marginBottom: spacing.sm,
@@ -52,33 +48,6 @@ export default StyleSheet.create({
   dateRow: {
     flexDirection: 'row',
     gap: spacing.md,
-  },
-  dateFieldWrap: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  dateLabel: {
-    fontFamily: 'DMSans_500Medium',
-    fontSize: 13,
-    color: colors.muted,
-  },
-  dateField: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E8E4EF',
-    paddingHorizontal: spacing.md,
-    height: 48,
-  },
-  dateInput: {
-    flex: 1,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 14,
-    color: colors.foreground,
-    paddingVertical: 0,
   },
   chipRow: {
     flexDirection: 'row',
@@ -125,6 +94,9 @@ export default StyleSheet.create({
     fontSize: 14,
     color: colors.foreground,
     paddingVertical: 0,
+    ...(Platform.OS === 'web'
+      ? ({ outlineStyle: 'none', outlineWidth: 0, boxShadow: 'none' } as object)
+      : null),
   },
   filterIconButton: {
     paddingLeft: spacing.sm,

@@ -10,8 +10,9 @@ import {
 
 import { ClayButton } from '@/components/ui';
 import { PageHeader } from '@/components/layout';
+import { useDocumentTitle, useIsWideLayout } from '@/hooks';
+import { useWebPageMeta } from '@/hooks/useWebPageMeta';
 import styles from '@/styles/patients/add-patient-wizard.styles';
-
 import { PatientInfoStep, type PatientDemographics } from './PatientInfoStep';
 import { createPatient } from '../services/patientService';
 
@@ -20,6 +21,7 @@ const INITIAL_DEMOGRAPHICS: PatientDemographics = {
   age: '',
   gender: '',
   contactNumber: '',
+  address: '',
 };
 
 function validateDemographics(values: PatientDemographics) {
@@ -50,6 +52,7 @@ type SaveIntent = 'list' | 'visit';
 /** PRD 2.1 — Registration captures demographics only; visits are recorded in Phase 3 flow. */
 export function AddPatientWizard() {
   const router = useRouter();
+  const isWideLayout = useIsWideLayout();
   const [demographics, setDemographics] = useState<PatientDemographics>(INITIAL_DEMOGRAPHICS);
   const [errors, setErrors] = useState<Partial<Record<keyof PatientDemographics, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -81,6 +84,7 @@ export function AddPatientWizard() {
         age: Number(demographics.age),
         gender: demographics.gender as 'male' | 'female' | 'other',
         contactNumber: demographics.contactNumber,
+        address: demographics.address.trim(),
         uniqueId: 'pending',
       });
 
@@ -96,16 +100,28 @@ export function AddPatientWizard() {
     }
   }
 
+  useDocumentTitle('Add Patient');
+  useWebPageMeta({
+    title: 'Add Patient',
+    showBack: true,
+    onBack: () => router.back(),
+  });
+
   return (
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <PageHeader title="Add Patient" onBack={() => router.back()} background="canvas" />
+      {!isWideLayout ? (
+        <PageHeader title="Add Patient" onBack={() => router.back()} background="canvas" />
+      ) : null}
 
       <ScrollView
         style={styles.flex}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          isWideLayout && styles.formWideContainer,
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -113,29 +129,53 @@ export function AddPatientWizard() {
           values={demographics}
           errors={errors}
           onChange={updateDemographics}
+          isWideLayout={isWideLayout}
+          submitError={isWideLayout ? submitError : null}
+          actions={
+            isWideLayout ? (
+              <>
+                <ClayButton
+                  label={isSubmitting ? 'Saving…' : 'Save Patient'}
+                  onPress={() => handleSave('list')}
+                  disabled={isSubmitting}
+                  style={styles.cardActionButton}
+                />
+                <ClayButton
+                  label="Save & Record Visit"
+                  variant="outline"
+                  onPress={() => handleSave('visit')}
+                  disabled={isSubmitting}
+                  style={styles.cardActionButton}
+                />
+              </>
+            ) : undefined
+          }
         />
       </ScrollView>
 
-      <View style={styles.footer}>
-        {submitError ? (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorBannerText}>{submitError}</Text>
-          </View>
-        ) : null}
+      {!isWideLayout ? (
+        <View style={styles.footer}>
+          {submitError ? (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorBannerText}>{submitError}</Text>
+            </View>
+          ) : null}
 
-        <ClayButton
-          label={isSubmitting ? 'Saving…' : 'Save Patient'}
-          onPress={() => handleSave('list')}
-          disabled={isSubmitting}
-          style={styles.primaryButton}
-        />
-        <ClayButton
-          label="Save & Record Visit"
-          variant="outline"
-          onPress={() => handleSave('visit')}
-          disabled={isSubmitting}
-        />
-      </View>
+          <ClayButton
+            label={isSubmitting ? 'Saving…' : 'Save Patient'}
+            fullWidth
+            onPress={() => handleSave('list')}
+            disabled={isSubmitting}
+          />
+          <ClayButton
+            label="Save & Record Visit"
+            variant="outline"
+            fullWidth
+            onPress={() => handleSave('visit')}
+            disabled={isSubmitting}
+          />
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 }

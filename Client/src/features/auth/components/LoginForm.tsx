@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MedTrackLogoHorizontal } from '@/components/ui';
+import { ClayButton, MedTrackLogoHorizontal } from '@/components/ui';
 import { ApiError } from '@/types/api';
-import styles from '@/styles/auth/login-form.styles';
+import { useTheme } from '@/theme';
 
 import { useAuthContext } from '../hooks/useAuth';
 import { login } from '../services/authService';
@@ -25,12 +25,12 @@ function isValidEmail(email: string): boolean {
 }
 
 function getResponsiveLayout(width: number) {
-  const isCompact = width < 360;
-  const isLarge = width >= 428;
+  const viewportWidth = width > 0 ? width : 768;
+  const isCompact = viewportWidth < 360;
+  const isLarge = viewportWidth >= 428;
 
   return {
     horizontalPadding: isCompact ? 28 : isLarge ? 40 : 32,
-    formMaxWidth: Math.min(width - (isCompact ? 56 : isLarge ? 80 : 64), 400),
     logoHeight: isCompact ? 38 : isLarge ? 48 : 42,
     verticalPadding: isCompact ? 16 : 24,
   };
@@ -42,6 +42,7 @@ export function LoginForm() {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const layout = getResponsiveLayout(width);
+  const { colors, isDark } = useTheme();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -94,35 +95,87 @@ export function LoginForm() {
     }
   }
 
+  const inputBg = isDark ? colors.inputBg : '#FFFFFF';
+  const inputBorder = isDark ? colors.borderSubtle : 'transparent';
+  const placeholderColor = isDark ? '#5A6B7A' : '#BDBDBD';
+
   return (
     <KeyboardAvoidingView
-      style={styles.flex}
+      style={{ flex: 1, width: '100%', backgroundColor: isDark ? colors.canvas : '#FFFFFF' }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
     >
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          {
-            minHeight: contentMinHeight,
-            paddingHorizontal: layout.horizontalPadding,
-            paddingVertical: layout.verticalPadding,
-          },
-        ]}
+        style={{ flex: 1, width: '100%', backgroundColor: isDark ? colors.canvas : '#FFFFFF' }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          minHeight: contentMinHeight,
+          paddingHorizontal: layout.horizontalPadding,
+          paddingVertical: layout.verticalPadding,
+        }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         bounces={false}
       >
-        <View style={[styles.centerBlock, { maxWidth: layout.formMaxWidth }]}>
-          <View style={styles.logoWrap}>
+        <View
+          style={{
+            width: '100%',
+            maxWidth: 400,
+            alignSelf: 'center',
+            alignItems: 'stretch',
+          }}
+        >
+          <View style={{ alignItems: 'center', marginBottom: 28 }}>
             <MedTrackLogoHorizontal height={layout.logoHeight} />
           </View>
 
-          <Text style={styles.subtitle}>Login to your Account</Text>
+          <Text
+            style={{
+              color: colors.muted,
+              textAlign: 'center',
+              fontFamily: 'DMSans_500Medium',
+              fontSize: 16,
+              marginBottom: 32,
+              letterSpacing: 0.1,
+            }}
+          >
+            Login to your Account
+          </Text>
 
-          <View style={styles.formStack}>
+          <View
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              minWidth: 0,
+              gap: 16,
+              alignSelf: 'stretch',
+            }}
+          >
             <TextInput
-              style={styles.flatInput}
+              style={{
+                backgroundColor: inputBg,
+                borderRadius: 12,
+                height: 56,
+                paddingHorizontal: 20,
+                fontFamily: 'DMSans_400Regular',
+                fontSize: 16,
+                color: colors.foreground,
+                width: '100%',
+                alignSelf: 'stretch',
+                borderWidth: isDark ? 1 : 0,
+                borderColor: inputBorder,
+                shadowColor: isDark ? 'transparent' : '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: isDark ? 0 : 0.06,
+                shadowRadius: 10,
+                elevation: isDark ? 0 : 3,
+                ...(Platform.OS === 'web'
+                  ? ({ outlineStyle: 'none' } as object)
+                  : null),
+              }}
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
@@ -132,13 +185,41 @@ export function LoginForm() {
               autoComplete="email"
               textContentType="emailAddress"
               returnKeyType="next"
-              placeholderTextColor="#BDBDBD"
+              placeholderTextColor={placeholderColor}
               editable={!isSubmitting}
             />
 
-            <View style={styles.passwordWrap}>
+            <View
+              style={{
+                width: '100%',
+                position: 'relative',
+                justifyContent: 'center',
+                alignSelf: 'stretch',
+              }}
+            >
               <TextInput
-                style={[styles.flatInput, styles.passwordInput]}
+                style={{
+                  backgroundColor: inputBg,
+                  borderRadius: 12,
+                  height: 56,
+                  paddingHorizontal: 20,
+                  paddingRight: 52,
+                  fontFamily: 'DMSans_400Regular',
+                  fontSize: 16,
+                  color: colors.foreground,
+                  width: '100%',
+                  alignSelf: 'stretch',
+                  borderWidth: isDark ? 1 : 0,
+                  borderColor: inputBorder,
+                  shadowColor: isDark ? 'transparent' : '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDark ? 0 : 0.06,
+                  shadowRadius: 10,
+                  elevation: isDark ? 0 : 3,
+                  ...(Platform.OS === 'web'
+                    ? ({ outlineStyle: 'none' } as object)
+                    : null),
+                }}
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
@@ -148,11 +229,19 @@ export function LoginForm() {
                 textContentType="password"
                 returnKeyType="done"
                 onSubmitEditing={handleLogin}
-                placeholderTextColor="#BDBDBD"
+                placeholderTextColor={placeholderColor}
                 editable={!isSubmitting}
               />
               <Pressable
-                style={styles.eyeButton}
+                style={{
+                  position: 'absolute',
+                  right: 4,
+                  top: 0,
+                  bottom: 0,
+                  width: 48,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
                 onPress={() => setIsPasswordVisible((visible) => !visible)}
                 accessibilityRole="button"
                 accessibilityLabel={isPasswordVisible ? 'Hide password' : 'Show password'}
@@ -161,26 +250,32 @@ export function LoginForm() {
                 <Feather
                   name={isPasswordVisible ? 'eye-off' : 'eye'}
                   size={20}
-                  color="#9CA3AF"
+                  color={isDark ? colors.muted : '#9CA3AF'}
                 />
               </Pressable>
             </View>
 
-            {error ? <Text style={styles.error}>{error}</Text> : null}
+            {error ? (
+              <Text
+                style={{
+                  color: colors.accent.secondary,
+                  textAlign: 'center',
+                  fontFamily: 'DMSans_500Medium',
+                  fontSize: 13,
+                  marginTop: 4,
+                }}
+              >
+                {error}
+              </Text>
+            ) : null}
 
-            <Pressable
-              style={({ pressed }) => [
-                styles.loginButton,
-                pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] },
-                isSubmitting && { opacity: 0.7 },
-              ]}
+            <ClayButton
+              label={isSubmitting ? 'Signing in…' : 'Sign In'}
+              fullWidth
               onPress={handleLogin}
               disabled={isSubmitting}
-            >
-              <Text style={styles.loginButtonLabel}>
-                {isSubmitting ? 'Signing in…' : 'Sign In'}
-              </Text>
-            </Pressable>
+              style={{ marginTop: 8, height: 45, minHeight: 45 }}
+            />
           </View>
         </View>
       </ScrollView>

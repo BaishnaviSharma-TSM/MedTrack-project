@@ -1,7 +1,15 @@
 export { useDashboardStats } from './hooks/useDashboardStats';
 export { getDashboardStats } from './services/dashboardService';
 export { StatCard } from './components/StatCard';
+export { DashboardStatCard } from './components/DashboardStatCard';
 export { ConditionBreakdownChart } from './components/ConditionBreakdownChart';
+export { ConditionDonutChart } from './components/ConditionDonutChart';
+export { VisitsLoggedCard } from './components/VisitsLoggedCard';
+export { VisitRhythmCard } from './components/VisitRhythmCard';
+export type { RhythmVisitEntry } from './components/VisitRhythmCard';
+export { VisitRhythmChart } from './components/VisitRhythmChart';
+export { PendingPatientsPanel } from './components/PendingPatientsPanel';
+export { RecentVisitsPanel } from './components/RecentVisitsPanel';
 export { PendingPatientRow } from './components/PendingPatientRow';
 export { RecentVisitRow } from './components/RecentVisitRow';
-export type { DashboardStats, ConditionCount } from './types';
+export type { DashboardStats, ConditionCount, WeeklyVisitBar } from './types';

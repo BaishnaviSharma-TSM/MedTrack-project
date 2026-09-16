@@ -1,9 +1,9 @@
 import { Feather } from '@expo/vector-icons';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, Text, TextInput, View } from 'react-native';
 
 import type { DateRangeChip } from '../types';
-import styles from '@/styles/screens/visits-tab.styles';
-import { colors } from '@/theme';
+import { DateField } from '@/components/ui';
+import { spacing, useTheme } from '@/theme';
 
 type VisitFiltersProps = {
   fromDate: string;
@@ -32,47 +32,52 @@ export function VisitFilters({
   searchQuery,
   onSearchChange,
 }: VisitFiltersProps) {
+  const { colors, isDark } = useTheme();
+
   return (
-    <View style={styles.filtersBlock}>
-      <View style={styles.dateRow}>
-        <View style={styles.dateFieldWrap}>
-          <Text style={styles.dateLabel}>From Date</Text>
-          <View style={styles.dateField}>
-            <Feather name="calendar" size={18} color={colors.muted} />
-            <TextInput
-              style={styles.dateInput}
-              placeholder="DD/MM/YYYY"
-              placeholderTextColor={colors.muted}
-              value={fromDate}
-              onChangeText={onFromDateChange}
-            />
-          </View>
-        </View>
-        <View style={styles.dateFieldWrap}>
-          <Text style={styles.dateLabel}>To Date</Text>
-          <View style={styles.dateField}>
-            <Feather name="calendar" size={18} color={colors.muted} />
-            <TextInput
-              style={styles.dateInput}
-              placeholder="DD/MM/YYYY"
-              placeholderTextColor={colors.muted}
-              value={toDate}
-              onChangeText={onToDateChange}
-            />
-          </View>
-        </View>
+    <View style={{ gap: spacing.base, marginBottom: spacing.sm }}>
+      <View style={{ flexDirection: 'row', gap: spacing.md }}>
+        <DateField
+          label="From Date"
+          value={fromDate}
+          onChange={onFromDateChange}
+          maxDate={toDate || undefined}
+        />
+        <DateField
+          label="To Date"
+          value={toDate}
+          onChange={onToDateChange}
+          minDate={fromDate || undefined}
+        />
       </View>
 
-      <View style={styles.chipRow}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
         {RANGE_OPTIONS.map((option) => {
           const selected = dateRange === option.value;
           return (
             <Pressable
               key={option.value}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={{
+                paddingHorizontal: spacing.base,
+                paddingVertical: spacing.sm,
+                borderRadius: 999,
+                backgroundColor: selected
+                  ? colors.brand.primary
+                  : isDark ? colors.cardBg : '#FFFFFF',
+                borderWidth: 1,
+                borderColor: selected
+                  ? colors.brand.primary
+                  : isDark ? colors.borderSubtle : '#E8E4EF',
+              }}
               onPress={() => onDateRangeChange(option.value)}
             >
-              <Text style={[styles.chipLabel, selected && styles.chipLabelSelected]}>
+              <Text
+                style={{
+                  fontFamily: selected ? 'DMSans_700Bold' : 'DMSans_500Medium',
+                  fontSize: 13,
+                  color: selected ? '#FFFFFF' : colors.muted,
+                }}
+              >
                 {option.label}
               </Text>
             </Pressable>
@@ -80,18 +85,40 @@ export function VisitFilters({
         })}
       </View>
 
-      <View style={styles.searchRow}>
-        <Feather name="search" size={18} color={colors.muted} style={styles.searchIcon} />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: isDark ? colors.inputBg : '#FFFFFF',
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: isDark ? colors.borderSubtle : '#E8E4EF',
+          paddingHorizontal: spacing.md,
+          height: 48,
+        }}
+      >
+        <Feather
+          name="search"
+          size={18}
+          color={colors.muted}
+          style={{ marginRight: spacing.sm }}
+        />
         <TextInput
-          style={styles.searchInput}
+          style={{
+            flex: 1,
+            fontFamily: 'DMSans_400Regular',
+            fontSize: 14,
+            color: colors.foreground,
+            paddingVertical: 0,
+            ...(Platform.OS === 'web'
+              ? ({ outlineStyle: 'none', outlineWidth: 0, boxShadow: 'none' } as object)
+              : null),
+          }}
           placeholder="Search by name, ID, or condition..."
-          placeholderTextColor={colors.muted}
+          placeholderTextColor={isDark ? '#5A6B7A' : colors.muted}
           value={searchQuery}
           onChangeText={onSearchChange}
         />
-        <Pressable style={styles.filterIconButton} accessibilityLabel="Filter options">
-          <Feather name="sliders" size={18} color={colors.muted} />
-        </Pressable>
       </View>
     </View>
   );

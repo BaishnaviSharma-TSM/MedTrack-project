@@ -1,3 +1,4 @@
+export { ConfirmModal } from './ConfirmModal';
 export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { LoadingScreen } from './LoadingScreen';
@@ -9,5 +10,6 @@ export { PatientPickerSkeleton } from './skeletons/PatientPickerSkeleton';
 export { PatientProfileSkeleton } from './skeletons/PatientProfileSkeleton';
 export { ProfileSkeleton } from './skeletons/ProfileSkeleton';
 export { RecordListSkeleton } from './skeletons/RecordListSkeleton';
+export { TableSkeleton } from './skeletons/TableSkeleton';
 export { ScreenSkeleton } from './skeletons/ScreenSkeleton';
 export { VisitDetailSkeleton } from './skeletons/VisitDetailSkeleton';

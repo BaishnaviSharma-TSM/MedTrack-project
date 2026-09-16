@@ -3,9 +3,10 @@ import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ProfileSkeleton } from "@/components/feedback";
+import { ConfirmModal, ProfileSkeleton } from "@/components/feedback";
+import { ScreenLayout } from "@/components/layout";
 import { ClayButton } from "@/components/ui";
-import { getTabContentBottomPadding } from "@/constants/navigation";
+import { getTabContentBottomPadding, SCREEN_TITLES } from "@/constants/navigation";
 import { getDashboardStats } from "@/features/dashboard";
 import { logout } from "@/features/auth/services/authService";
 import {
@@ -16,8 +17,11 @@ import {
   useDoctorProfile,
 } from "@/features/profile";
 import type { DoctorProfileFormValues } from "@/features/profile";
+import { useDocumentTitle, useIsWideLayout } from "@/hooks";
 import { useAuthContext } from "@/providers";
+import { useTheme } from "@/theme";
 import styles from "@/styles/screens/profile-tab.styles";
+import wideStyles from "@/styles/layout/wide-layout.styles";
 
 const EMPTY_FORM: DoctorProfileFormValues = {
   fullName: "",
@@ -26,15 +30,21 @@ const EMPTY_FORM: DoctorProfileFormValues = {
   phone: "",
 };
 
-/** Doctor profile hub — view/edit professional details (PRD users: name, clinic, role). */
+const PROFILE_SUBTITLE = "View and update your personal information";
+
+/** Doctor profile hub — view/edit professional details. */
 export default function ProfileTabScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const isWideLayout = useIsWideLayout();
   const { user, setUser } = useAuthContext();
+  const { colors } = useTheme();
   const [formValues, setFormValues] =
     useState<DoctorProfileFormValues>(EMPTY_FORM);
   const [totalPatients, setTotalPatients] = useState(0);
   const [totalVisits, setTotalVisits] = useState(0);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const {
     profile,
@@ -56,6 +66,8 @@ export default function ProfileTabScreen() {
       }
     },
   });
+
+  useDocumentTitle(SCREEN_TITLES.profile);
 
   const loadScreenData = useCallback(async () => {
     await refresh();
@@ -104,38 +116,73 @@ export default function ProfileTabScreen() {
     });
   }
 
-  async function handleLogout() {
-    await logout();
-    setUser(null);
-    router.replace("/(auth)");
+  async function handleConfirmSignOut() {
+    setIsSigningOut(true);
+    try {
+      await logout();
+      setUser(null);
+      router.replace("/(auth)");
+    } finally {
+      setIsSigningOut(false);
+      setShowSignOutConfirm(false);
+    }
   }
 
+  const headerActions = profile ? (
+    isEditing ? (
+      <>
+        <ClayButton
+          label={isSaving ? "Saving…" : "Save Profile"}
+          onPress={handleSave}
+          disabled={isSaving}
+        />
+        <ClayButton
+          label="Cancel"
+          variant="outline"
+          onPress={handleCancelEditing}
+          disabled={isSaving}
+        />
+      </>
+    ) : (
+      <>
+        <ClayButton label="Edit Profile" variant="outline" onPress={handleStartEditing} />
+        <ClayButton
+          label="Sign out"
+          variant="outline"
+          onPress={() => setShowSignOutConfirm(true)}
+        />
+      </>
+    )
+  ) : null;
+
   return (
+    <ScreenLayout title={SCREEN_TITLES.profile} subtitle={PROFILE_SUBTITLE}>
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={[
         styles.scrollContent,
-        { paddingBottom: getTabContentBottomPadding(insets.bottom) },
+        isWideLayout && wideStyles.contentContainer,
+        { paddingBottom: getTabContentBottomPadding(insets.bottom, isWideLayout) },
       ]}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      {/* <Text style={styles.pageTitle}>Profile</Text>
-      <Text style={styles.pageSubtitle}>Your professional details and clinic activity</Text> */}
-
       {isLoading ? (
         <ProfileSkeleton />
       ) : !profile ? (
-        <Text style={styles.muted}>Sign in to view your profile.</Text>
+        <Text style={[styles.muted, { color: colors.muted }]}>
+          Sign in to view your profile.
+        </Text>
       ) : (
         <>
-          <ProfileHero profile={profile} />
+          <ProfileHero profile={profile} actions={headerActions} />
 
-          {!isEditing ? (
-            <ProfileStatStrip
-              totalPatients={totalPatients}
-              totalVisits={totalVisits}
-            />
+          {saveError ? (
+            <View style={[styles.errorBanner, { backgroundColor: colors.dangerBg }]}>
+              <Text style={[styles.errorBannerText, { color: colors.danger }]}>
+                {saveError}
+              </Text>
+            </View>
           ) : null}
 
           {isEditing ? (
@@ -144,50 +191,36 @@ export default function ProfileTabScreen() {
               values={formValues}
               errors={formErrors}
               onChange={updateFormField}
+              isWideLayout={isWideLayout}
             />
           ) : (
-            <ProfileDetailsCard profile={profile} />
+            <ProfileDetailsCard profile={profile} isWideLayout={isWideLayout} />
           )}
 
-          <View style={styles.actions}>
-            {saveError ? (
-              <View style={styles.errorBanner}>
-                <Text style={styles.errorBannerText}>{saveError}</Text>
-              </View>
-            ) : null}
-
-            {isEditing ? (
-              <>
-                <ClayButton
-                  label={isSaving ? "Saving…" : "Save Profile"}
-                  onPress={handleSave}
-                  disabled={isSaving}
-                  style={styles.primaryButton}
-                />
-                <ClayButton
-                  label="Cancel"
-                  variant="outline"
-                  onPress={handleCancelEditing}
-                  disabled={isSaving}
-                />
-              </>
-            ) : (
-              <>
-                <ClayButton
-                  label="Edit Profile"
-                  onPress={handleStartEditing}
-                  style={styles.primaryButton}
-                />
-                <ClayButton
-                  label="Sign out"
-                  variant="outline"
-                  onPress={handleLogout}
-                />
-              </>
-            )}
-          </View>
+          {!isEditing ? (
+            <ProfileStatStrip
+              totalPatients={totalPatients}
+              totalVisits={totalVisits}
+            />
+          ) : null}
         </>
       )}
     </ScrollView>
+
+    <ConfirmModal
+      visible={showSignOutConfirm}
+      title="Sign out?"
+      message="Are you sure you want to sign out?"
+      confirmLabel="Sign out"
+      cancelLabel="Cancel"
+      confirmLoading={isSigningOut}
+      onConfirm={handleConfirmSignOut}
+      onCancel={() => {
+        if (!isSigningOut) {
+          setShowSignOutConfirm(false);
+        }
+      }}
+    />
+    </ScreenLayout>
   );
 }

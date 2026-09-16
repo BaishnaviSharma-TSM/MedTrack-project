@@ -5,17 +5,20 @@ import { colors } from '@/theme';
 export default StyleSheet.create({
   flex: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   centerBlock: {
     width: '100%',
+    maxWidth: 400,
     alignSelf: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   logoWrap: {
     alignItems: 'center',
@@ -31,7 +34,10 @@ export default StyleSheet.create({
   },
   formStack: {
     width: '100%',
+    maxWidth: 400,
+    minWidth: 0,
     gap: 16,
+    alignSelf: 'stretch',
   },
   flatInput: {
     backgroundColor: '#FFFFFF',
@@ -42,6 +48,9 @@ export default StyleSheet.create({
     fontSize: 16,
     color: colors.foreground,
     width: '100%',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignSelf: 'stretch',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -50,8 +59,11 @@ export default StyleSheet.create({
   },
   passwordWrap: {
     width: '100%',
+    maxWidth: '100%',
+    minWidth: 0,
     position: 'relative',
     justifyContent: 'center',
+    alignSelf: 'stretch',
   },
   passwordInput: {
     paddingRight: 52,
@@ -81,6 +93,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    maxWidth: '100%',
+    alignSelf: 'stretch',
     shadowColor: colors.brand.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,

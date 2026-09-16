@@ -11,6 +11,7 @@ type PatientSelectStepProps = {
   selectedPatientId: string;
   error?: string;
   onSelect: (patient: Patient) => void;
+  isWideLayout?: boolean;
 };
 
 /** PRD 3.3 — A visit must be attached to an already-registered patient. */
@@ -18,6 +19,7 @@ export function PatientSelectStep({
   selectedPatientId,
   error,
   onSelect,
+  isWideLayout = false,
 }: PatientSelectStepProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [search, setSearch] = useState('');
@@ -50,7 +52,7 @@ export function PatientSelectStep({
         variant="flat"
       />
 
-      <View style={styles.list}>
+      <View style={[styles.list, isWideLayout && !isLoading && styles.listWide]}>
         {isLoading ? (
           <PatientPickerSkeleton />
         ) : (
@@ -59,7 +61,11 @@ export function PatientSelectStep({
             return (
               <Pressable
                 key={patient.id}
-                style={[styles.patientCard, selected && styles.patientCardSelected]}
+                style={[
+                  styles.patientCard,
+                  isWideLayout && styles.patientCardWide,
+                  selected && styles.patientCardSelected,
+                ]}
                 onPress={() => onSelect(patient)}
               >
                 <Text style={styles.patientName}>{patient.name}</Text>

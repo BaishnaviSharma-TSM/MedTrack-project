@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -10,51 +10,60 @@ export default StyleSheet.create({
     paddingBottom: spacing.xl,
     gap: spacing.md,
   },
+  scrollContentWide: {
+    paddingBottom: 0,
+    width: '100%',
+  },
+  sectionHeader: {
+    gap: spacing.sm,
+  },
   sectionTitle: {
     fontFamily: 'Nunito_700Bold',
     fontSize: 18,
     color: colors.foreground,
   },
-  hint: {
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 13,
-    color: colors.muted,
-    marginTop: -spacing.sm,
+  fieldRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.md,
+    width: '100%',
+  },
+  fieldCol: {
+    flex: 1,
+    minWidth: 0,
   },
   fieldBlock: {
     gap: spacing.sm,
+    width: '100%',
   },
-  booleanRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  booleanOption: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    borderRadius: 12,
-    alignItems: 'center',
-    backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: colors.inputBg,
-  },
-  booleanOptionSelected: {
-    borderColor: colors.brand.primary,
-    backgroundColor: 'rgba(11, 114, 133, 0.08)',
-  },
-  booleanLabel: {
-    fontFamily: 'DMSans_700Bold',
+  inputLabel: {
     fontSize: 15,
-    color: colors.muted,
   },
-  booleanLabelSelected: {
-    color: colors.brand.primary,
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    minHeight: 48,
+    ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
+  },
+  checkboxBox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.brand.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+  },
+  checkboxBoxChecked: {
+    backgroundColor: colors.brand.primary,
   },
   fieldLabel: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 13,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: colors.muted,
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 15,
+    color: colors.foreground,
+    flex: 1,
   },
   errorText: {
     fontFamily: 'DMSans_500Medium',

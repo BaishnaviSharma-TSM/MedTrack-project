@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
+import { ClayButton } from '@/components/ui';
 import type { Patient } from '@/types';
 import { formatDisplayDate } from '@/utils/formatDisplayDate';
 import styles from '@/styles/dashboard/pending-patient-row.styles';
@@ -26,14 +27,12 @@ export function PendingPatientRow({ patient }: PendingPatientRowProps) {
         </Text>
       </Pressable>
 
-      <Pressable
-        style={styles.recordButton}
+      <ClayButton
+        label="Record"
+        variant="secondary"
         onPress={() => router.push(`/(app)/visits/new?patientId=${patient.id}`)}
-        accessibilityRole="button"
         accessibilityLabel={`Record visit for ${patient.name}`}
-      >
-        <Text style={styles.recordButtonText}>Record</Text>
-      </Pressable>
+      />
     </View>
   );
 }

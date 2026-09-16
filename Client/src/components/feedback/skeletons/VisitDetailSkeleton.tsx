@@ -6,14 +6,18 @@ import styles from '@/styles/feedback/skeletons.styles';
 export function VisitDetailSkeleton() {
   return (
     <View
-      style={styles.stack}
+      style={[styles.whiteCard, { flex: 1 }]}
       accessibilityRole="progressbar"
       accessibilityLabel="Loading visit"
     >
-      {Array.from({ length: 3 }).map((_, cardIndex) => (
-        <View key={cardIndex} style={styles.whiteCard}>
-          <ShimmerBone width="32%" height={16} radius={6} />
-          {Array.from({ length: 4 }).map((_, rowIndex) => (
+      <View style={styles.rowBetween}>
+        <ShimmerBone width="28%" height={18} radius={6} />
+        <ShimmerBone width={168} height={40} radius={12} />
+      </View>
+      {Array.from({ length: 3 }).map((_, sectionIndex) => (
+        <View key={sectionIndex} style={styles.footerMeta}>
+          <ShimmerBone width="22%" height={12} radius={6} />
+          {Array.from({ length: 3 }).map((_, rowIndex) => (
             <View key={rowIndex} style={styles.detailRow}>
               <ShimmerBone width="35%" height={13} radius={6} />
               <ShimmerBone width="40%" height={14} radius={6} />
@@ -21,7 +25,6 @@ export function VisitDetailSkeleton() {
           ))}
         </View>
       ))}
-      <ShimmerBone height={56} radius={20} />
     </View>
   );
 }

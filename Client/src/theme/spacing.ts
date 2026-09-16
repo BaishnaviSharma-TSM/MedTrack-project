@@ -12,9 +12,7 @@ export const spacing = {
 
 /** Standard component heights */
 export const sizes = {
-  buttonSm: 44,
-  button: 56,
-  buttonLg: 64,
+  button: 36,
   input: 64,
   navBar: 64,
   navBarLg: 80,

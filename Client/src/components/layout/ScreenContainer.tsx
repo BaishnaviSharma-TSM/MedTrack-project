@@ -1,14 +1,13 @@
-import { StyleSheet, Text, View, type ViewProps } from 'react-native';
+import { Text, View, type ViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ClayBackground } from '@/components/ui';
-import { colors, spacing, textStyles } from '@/theme';
+import { spacing, textStyles, useTheme } from '@/theme';
 
 type ScreenContainerProps = ViewProps & {
   children: React.ReactNode;
   title?: string;
   scroll?: boolean;
-  /** Remove default horizontal padding — useful for centered auth screens */
   fullWidth?: boolean;
 };
 
@@ -19,36 +18,39 @@ export function ScreenContainer({
   style,
   ...props
 }: ScreenContainerProps) {
+  const { colors } = useTheme();
+
   return (
-    <ClayBackground style={styles.flex}>
-      <SafeAreaView style={[styles.flex, style]} edges={['bottom', 'left', 'right']} {...props}>
+    <ClayBackground style={{ flex: 1, backgroundColor: colors.canvas }}>
+      <SafeAreaView
+        style={[{ flex: 1, backgroundColor: colors.canvas }, style]}
+        edges={['bottom', 'left', 'right']}
+        {...props}
+      >
         {title ? (
-          <Text style={[textStyles.sectionTitle, styles.title]}>{title}</Text>
+          <Text
+            style={[
+              textStyles.sectionTitle,
+              {
+                color: colors.foreground,
+                paddingHorizontal: spacing.lg,
+                paddingTop: spacing.base,
+                paddingBottom: spacing.sm,
+              },
+            ]}
+          >
+            {title}
+          </Text>
         ) : null}
-        <View style={[styles.content, fullWidth && styles.contentFullWidth]}>
+        <View
+          style={[
+            { flex: 1, paddingHorizontal: spacing.lg },
+            fullWidth && { paddingHorizontal: 0 },
+          ]}
+        >
           {children}
         </View>
       </SafeAreaView>
     </ClayBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: colors.canvas,
-  },
-  title: {
-    color: colors.foreground,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.base,
-    paddingBottom: spacing.sm,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-  },
-  contentFullWidth: {
-    paddingHorizontal: 0,
-  },
-});

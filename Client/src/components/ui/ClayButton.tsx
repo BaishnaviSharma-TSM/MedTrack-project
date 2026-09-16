@@ -1,4 +1,7 @@
+import { Feather } from '@expo/vector-icons';
+import type { ComponentProps } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -7,26 +10,64 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { colors, primaryButtonStyle, radii, shadows, sizes, textStyles } from '@/theme';
+import { primaryButtonStyle, textStyles, useTheme } from '@/theme';
+
+type ClayButtonVariant = 'primary' | 'secondary' | 'outline';
 
 type ClayButtonProps = PressableProps & {
   label: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: ClayButtonVariant;
+  icon?: ComponentProps<typeof Feather>['name'];
+  iconPosition?: 'left' | 'right';
+  fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;
 };
+
+const ICON_SIZE = 14;
+const webPointer = Platform.OS === 'web' ? ({ cursor: 'pointer' } as const) : null;
 
 export function ClayButton({
   label,
   variant = 'primary',
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
   style,
   disabled,
   ...props
 }: ClayButtonProps) {
+  const { colors, isDark } = useTheme();
+
+  const variantStyle =
+    variant === 'primary'
+      ? { backgroundColor: colors.accent.primary }
+      : variant === 'secondary'
+        ? {
+            backgroundColor: isDark ? colors.brand.alpha10 : colors.brand.alpha08,
+            borderWidth: 1,
+            borderColor: isDark ? colors.borderSubtle : 'transparent',
+          }
+        : {
+            backgroundColor: isDark ? colors.cardBg : colors.white,
+            borderWidth: 1,
+            borderColor: isDark ? colors.borderSubtle : '#E8E4EF',
+          };
+
+  const contentColor = variant === 'primary' ? colors.white : colors.accent.primary;
+
+  const iconNode = icon ? (
+    <Feather name={icon} size={ICON_SIZE} color={contentColor} />
+  ) : null;
+
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
       style={({ pressed }) => [
         styles.base,
-        variantStyles[variant],
+        variantStyle,
+        fullWidth ? styles.fullWidth : styles.hug,
+        webPointer,
         pressed && styles.pressed,
         disabled && styles.disabled,
         style,
@@ -34,14 +75,11 @@ export function ClayButton({
       disabled={disabled}
       {...props}
     >
-      <Text
-        style={[
-          textStyles.button,
-          variant === 'primary' ? styles.labelPrimary : styles.labelDefault,
-        ]}
-      >
+      {iconPosition === 'left' ? iconNode : null}
+      <Text style={[textStyles.button, { color: contentColor }]} numberOfLines={1}>
         {label}
       </Text>
+      {iconPosition === 'right' ? iconNode : null}
     </Pressable>
   );
 }
@@ -49,42 +87,23 @@ export function ClayButton({
 const styles = StyleSheet.create({
   base: {
     ...primaryButtonStyle,
-    minHeight: sizes.button,
-    paddingHorizontal: 24,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 14,
+    flexShrink: 0,
+    ...(Platform.OS === 'web' ? ({ boxSizing: 'border-box' } as object) : null),
+  },
+  hug: {
+    alignSelf: 'flex-start',
+  },
+  fullWidth: {
+    alignSelf: 'stretch',
+    width: '100%',
   },
   pressed: {
-    transform: [{ scale: 0.92 }],
-    ...shadows.clayPressed,
+    opacity: 0.85,
   },
   disabled: {
     opacity: 0.6,
-  },
-  labelPrimary: {
-    color: colors.white,
-  },
-  labelDefault: {
-    color: colors.foreground,
-  },
-});
-
-const variantStyles = StyleSheet.create({
-  primary: {
-    backgroundColor: colors.accent.primary,
-    ...shadows.clayButton,
-  },
-  secondary: {
-    backgroundColor: colors.white,
-    ...shadows.clayButton,
-  },
-  outline: {
-    backgroundColor: colors.transparent,
-    borderWidth: 2,
-    borderColor: `${colors.accent.primary}33`,
-    ...shadows.none,
-  },
-  ghost: {
-    backgroundColor: colors.transparent,
-    ...shadows.none,
-    minHeight: sizes.buttonSm,
   },
 });

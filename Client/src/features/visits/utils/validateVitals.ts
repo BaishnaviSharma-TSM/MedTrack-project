@@ -12,9 +12,6 @@ export function validateVitals(
     const value = values[field.key];
 
     if (field.type === 'boolean') {
-      if (typeof value !== 'boolean') {
-        errors[field.key] = 'Please select Yes or No.';
-      }
       continue;
     }
 

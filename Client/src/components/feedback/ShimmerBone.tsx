@@ -8,7 +8,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import styles from '@/styles/feedback/shimmer-bone.styles';
+import { useTheme } from '@/theme';
 
 type ShimmerBoneProps = {
   width?: DimensionValue;
@@ -23,6 +23,7 @@ export function ShimmerBone({
   radius = 8,
   style,
 }: ShimmerBoneProps) {
+  const { colors, isDark } = useTheme();
   const [layoutWidth, setLayoutWidth] = useState(0);
   const progress = useRef(new Animated.Value(0)).current;
 
@@ -53,10 +54,28 @@ export function ShimmerBone({
   return (
     <View
       onLayout={(event) => setLayoutWidth(event.nativeEvent.layout.width)}
-      style={[styles.bone, { width, height, borderRadius: radius }, style]}
+      style={[
+        {
+          overflow: 'hidden',
+          backgroundColor: colors.inputBg,
+          width,
+          height,
+          borderRadius: radius,
+        },
+        style,
+      ]}
     >
       {layoutWidth > 0 ? (
-        <Animated.View style={[styles.highlight, { transform: [{ translateX }] }]} />
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            width: '40%',
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.72)',
+            transform: [{ translateX }],
+          }}
+        />
       ) : null}
     </View>
   );

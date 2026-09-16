@@ -8,9 +8,12 @@ const EMPTY_STATS: DashboardStats = {
   pendingFirstVisitCount: 0,
   totalPatients: 0,
   visitsThisWeek: 0,
+  visitsIn30Days: 0,
   pendingPatients: [],
   recentVisits: [],
   visitsByCondition: [],
+  weeklyVisitRhythm: [],
+  lastVisitSummary: null,
 };
 
 export function useDashboardStats() {

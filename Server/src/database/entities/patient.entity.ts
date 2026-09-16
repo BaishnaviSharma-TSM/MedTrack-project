@@ -46,6 +46,9 @@ export class PatientEntity {
   @Column({ name: 'contact_number', length: 32 })
   contactNumber: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true, default: '' })
+  address: string;
+
   @Column({ name: 'unique_id', length: 32 })
   uniqueId: string;
 

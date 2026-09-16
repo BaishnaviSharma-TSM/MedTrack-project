@@ -40,11 +40,11 @@ function isWithinRange(isoDate: string, fromDate: string, toDate: string) {
   return true;
 }
 
-export function useVisitRecords() {
+export function useVisitRecords(initialDateRange: DateRangeChip = '30d') {
   const [records, setRecords] = useState<VisitRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [dateRange, setDateRange] = useState<DateRangeChip>('30d');
+  const [dateRange, setDateRange] = useState<DateRangeChip>(initialDateRange);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 

@@ -162,6 +162,7 @@ export class VisitsService {
       age: patient.age,
       gender: patient.gender,
       contactNumber: patient.contactNumber,
+      address: patient.address ?? '',
       uniqueId: patient.uniqueId,
       createdAt: patient.createdAt.toISOString(),
       updatedAt: patient.updatedAt.toISOString(),

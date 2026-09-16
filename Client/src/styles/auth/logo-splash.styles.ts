@@ -11,7 +11,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: colors.canvas,
   },
-  pressable: {
+  content: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -25,13 +25,5 @@ export default StyleSheet.create({
     marginTop: 20,
     fontFamily: 'DMSans_500Medium',
     fontSize: 16,
-  },
-  hint: {
-    color: colors.muted,
-    textAlign: 'center',
-    marginTop: 8,
-    opacity: 0.7,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 12,
   },
 });

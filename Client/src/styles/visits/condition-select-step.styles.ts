@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors, spacing } from '@/theme';
 
@@ -20,12 +20,25 @@ export default StyleSheet.create({
   conditionGrid: {
     gap: spacing.sm,
   },
+  conditionGridWide: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   conditionCard: {
     padding: spacing.base,
     borderRadius: 16,
     backgroundColor: colors.white,
     borderWidth: 2,
     borderColor: colors.inputBg,
+    ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
+  },
+  conditionCardWide: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 220,
+    minWidth: 180,
+    maxWidth: 320,
+    backgroundColor: colors.canvas,
   },
   conditionCardSelected: {
     borderColor: colors.brand.primary,

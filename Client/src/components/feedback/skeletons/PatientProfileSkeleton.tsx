@@ -10,12 +10,24 @@ export function PatientProfileSkeleton() {
       accessibilityRole="progressbar"
       accessibilityLabel="Loading patient profile"
     >
-      <View style={styles.identityCard}>
-        <ShimmerBone width={52} height={52} radius={26} />
-        <View style={styles.wrap}>
-          <ShimmerBone width="65%" height={18} radius={6} />
-          <ShimmerBone width="40%" height={13} radius={6} />
+      <View style={styles.whiteCard}>
+        <View style={styles.rowBetween}>
+          <View style={styles.row}>
+            <ShimmerBone width={52} height={52} radius={26} />
+            <View style={styles.wrap}>
+              <ShimmerBone width="65%" height={18} radius={6} />
+              <ShimmerBone width="40%" height={13} radius={6} />
+            </View>
+          </View>
+          <ShimmerBone width={96} height={40} radius={12} />
         </View>
+        <ShimmerBone width="35%" height={16} radius={6} />
+        {Array.from({ length: 3 }).map((_, index) => (
+          <View key={index} style={styles.detailRow}>
+            <ShimmerBone width="40%" height={13} radius={6} />
+            <ShimmerBone width="40%" height={13} radius={6} />
+          </View>
+        ))}
       </View>
 
       <View style={styles.row}>
@@ -28,24 +40,18 @@ export function PatientProfileSkeleton() {
       </View>
 
       <View style={styles.whiteCard}>
-        <ShimmerBone width="35%" height={16} radius={6} />
-        {Array.from({ length: 4 }).map((_, index) => (
-          <View key={index} style={styles.detailRow}>
-            <ShimmerBone width="28%" height={13} radius={6} />
-            <ShimmerBone width="42%" height={14} radius={6} />
+        <View style={styles.rowBetween}>
+          <ShimmerBone width="35%" height={16} radius={6} />
+          <ShimmerBone width={112} height={40} radius={12} />
+        </View>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <View key={index} style={styles.listRow}>
+            <ShimmerBone width="30%" height={12} radius={6} />
+            <ShimmerBone width="55%" height={15} radius={6} />
+            <ShimmerBone width="80%" height={12} radius={6} />
           </View>
         ))}
       </View>
-
-      <ShimmerBone height={56} radius={20} />
-
-      {Array.from({ length: 3 }).map((_, index) => (
-        <View key={index} style={styles.listRow}>
-          <ShimmerBone width="30%" height={12} radius={6} />
-          <ShimmerBone width="55%" height={15} radius={6} />
-          <ShimmerBone width="80%" height={12} radius={6} />
-        </View>
-      ))}
     </View>
   );
 }

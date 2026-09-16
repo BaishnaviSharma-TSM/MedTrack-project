@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
-import { colors, spacing } from '@/theme';
+import { spacing } from '@/theme';
 
 export default StyleSheet.create({
   flex: {
@@ -10,14 +10,23 @@ export default StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.lg,
   },
+  formWideContainer: {
+    width: '100%',
+    alignSelf: 'stretch',
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.lg,
+  },
   footer: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
     paddingBottom: spacing.base,
     gap: spacing.sm,
   },
-  primaryButton: {
-    backgroundColor: colors.brand.primary,
+  cardActionButton: {
+    flexGrow: 0,
+    flexShrink: 0,
+    ...(Platform.OS === 'web' ? ({ whiteSpace: 'nowrap' } as object) : null),
   },
   errorBanner: {
     padding: spacing.md,
