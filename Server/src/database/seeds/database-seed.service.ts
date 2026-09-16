@@ -10,9 +10,12 @@ import {
   ClinicEntity,
   ConditionEntity,
   ConditionFieldEntity,
+  PatientEntity,
   UserEntity,
+  VisitEntity,
   VitalNormalRangeEntity,
 } from '../entities';
+import { DEMO_PATIENTS, DEMO_VISITS } from './demo-clinical.data';
 
 const CONDITIONS = [
   {
@@ -131,6 +134,10 @@ export class DatabaseSeedService implements OnModuleInit {
     private readonly conditionFieldRepository: Repository<ConditionFieldEntity>,
     @InjectRepository(VitalNormalRangeEntity)
     private readonly vitalRangeRepository: Repository<VitalNormalRangeEntity>,
+    @InjectRepository(PatientEntity)
+    private readonly patientRepository: Repository<PatientEntity>,
+    @InjectRepository(VisitEntity)
+    private readonly visitRepository: Repository<VisitEntity>,
   ) {}
 
   async onModuleInit() {
@@ -169,14 +176,6 @@ export class DatabaseSeedService implements OnModuleInit {
         fullName: 'Dr. Arjun Mehta',
         specialty: 'General Physician',
         phone: '9876543210',
-      },
-      {
-        email: 'nurse@medtrack.com',
-        role: Role.Nurse,
-        staffCode: 'NR-001',
-        fullName: 'Nurse Priya Sharma',
-        specialty: 'Nursing',
-        phone: '9123456780',
       },
     ];
 
@@ -248,8 +247,127 @@ export class DatabaseSeedService implements OnModuleInit {
       );
     }
 
+    const { patientsCreated, visitsCreated } = await this.seedDemoClinicalData(clinic.id);
+    await this.removeExtraStaff();
+
     this.logger.success(
-      `Seed complete — clinic "${clinic.name}", ${users.length} users, ${CONDITIONS.length} conditions`,
+      `Seed complete — clinic "${clinic.name}", ${users.length} users, ${CONDITIONS.length} conditions, ${patientsCreated} patients, ${visitsCreated} visits`,
     );
+  }
+
+  private async seedDemoClinicalData(clinicId: string) {
+    const primaryDoctor = await this.userRepository.findOne({
+      where: { email: 'doctor@medtrack.com' },
+    });
+
+    if (!primaryDoctor) {
+      this.logger.warn('Skipping demo clinical seed — primary doctor not found');
+      return { patientsCreated: 0, visitsCreated: 0 };
+    }
+
+    const conditions = await this.conditionRepository.find();
+    const conditionsBySlug = new Map(conditions.map((condition) => [condition.slug, condition]));
+
+    let patientsCreated = 0;
+    const patientsByUniqueId = new Map<string, PatientEntity>();
+
+    for (const patientSeed of DEMO_PATIENTS) {
+      let patient = await this.patientRepository.findOne({
+        where: { clinicId, uniqueId: patientSeed.uniqueId },
+      });
+
+      if (!patient) {
+        const createdAt = new Date(patientSeed.createdAt);
+        patient = await this.patientRepository.save(
+          this.patientRepository.create({
+            clinicId,
+            createdByUserId: primaryDoctor.id,
+            name: patientSeed.name,
+            age: patientSeed.age,
+            gender: patientSeed.gender,
+            contactNumber: patientSeed.contactNumber,
+            address: patientSeed.address,
+            uniqueId: patientSeed.uniqueId,
+            createdAt,
+            updatedAt: createdAt,
+          }),
+        );
+        patientsCreated += 1;
+      }
+
+      patientsByUniqueId.set(patientSeed.uniqueId, patient);
+    }
+
+    let visitsCreated = 0;
+
+    for (const visitSeed of DEMO_VISITS) {
+      const patient = patientsByUniqueId.get(visitSeed.patientUniqueId);
+      const condition = conditionsBySlug.get(visitSeed.conditionSlug);
+
+      if (!patient || !condition) {
+        this.logger.warn(
+          `Skipping visit seed ${visitSeed.patientUniqueId}/${visitSeed.conditionSlug} — missing patient or condition`,
+        );
+        continue;
+      }
+
+      const visitDate = new Date(visitSeed.visitDate);
+      const existing = await this.visitRepository
+        .createQueryBuilder('visit')
+        .where('visit.patient_id = :patientId', { patientId: patient.id })
+        .andWhere('visit.condition_slug = :slug', { slug: visitSeed.conditionSlug })
+        .andWhere('visit.visit_date = :visitDate', { visitDate })
+        .getOne();
+
+      if (existing) continue;
+
+      await this.visitRepository.save(
+        this.visitRepository.create({
+          patientId: patient.id,
+          clinicId,
+          recordedByUserId: primaryDoctor.id,
+          conditionId: condition.id,
+          conditionSlug: condition.slug,
+          vitals: visitSeed.vitals,
+          severity: visitSeed.severity,
+          notes: visitSeed.notes,
+          visitDate,
+        }),
+      );
+      visitsCreated += 1;
+    }
+
+    return { patientsCreated, visitsCreated };
+  }
+
+  private async removeExtraStaff() {
+    const extraEmails = [
+      'nurse@medtrack.com',
+      'sneha.iyer@medtrack.com',
+      'priya.nair@medtrack.com',
+      'kavya.rao@medtrack.com',
+    ];
+    const primaryDoctor = await this.userRepository.findOne({
+      where: { email: 'doctor@medtrack.com' },
+    });
+
+    for (const email of extraEmails) {
+      const extra = await this.userRepository.findOne({ where: { email } });
+      if (!extra) continue;
+
+      if (primaryDoctor) {
+        await this.visitRepository.update(
+          { recordedByUserId: extra.id },
+          { recordedByUserId: primaryDoctor.id },
+        );
+        await this.patientRepository.update(
+          { createdByUserId: extra.id },
+          { createdByUserId: primaryDoctor.id },
+        );
+      }
+
+      await this.userRepository.delete(extra.id);
+      this.logger.info(`Removed extra staff account ${email}`);
+    }
   }
 }

@@ -4,7 +4,9 @@ import {
   ClinicEntity,
   ConditionEntity,
   ConditionFieldEntity,
+  PatientEntity,
   UserEntity,
+  VisitEntity,
   VitalNormalRangeEntity,
 } from '../entities';
 import { DatabaseSeedService } from './database-seed.service';
@@ -14,6 +16,8 @@ import { DatabaseSeedService } from './database-seed.service';
     TypeOrmModule.forFeature([
       ClinicEntity,
       UserEntity,
+      PatientEntity,
+      VisitEntity,
       ConditionEntity,
       ConditionFieldEntity,
       VitalNormalRangeEntity,
