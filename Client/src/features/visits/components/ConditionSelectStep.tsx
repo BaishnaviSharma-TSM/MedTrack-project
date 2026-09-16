@@ -1,7 +1,7 @@
-import { Platform, Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from "react-native";
 
-import type { ConditionDefinition } from '@/features/conditions/types';
-import { spacing, useTheme } from '@/theme';
+import type { ConditionDefinition } from "@/features/conditions/types";
+import { spacing, useTheme } from "@/theme";
 
 type ConditionSelectStepProps = {
   conditions: ConditionDefinition[];
@@ -22,12 +22,18 @@ export function ConditionSelectStep({
 
   return (
     <View style={{ gap: spacing.md }}>
-      <Text style={{ fontFamily: 'Nunito_700Bold', fontSize: 18, color: colors.foreground }}>
+      <Text
+        style={{
+          fontFamily: "Nunito_700Bold",
+          fontSize: 18,
+          color: colors.foreground,
+        }}
+      >
         Select condition
       </Text>
       <Text
         style={{
-          fontFamily: 'DMSans_400Regular',
+          fontFamily: "DMSans_400Regular",
           fontSize: 13,
           color: colors.muted,
           marginBottom: spacing.sm,
@@ -39,7 +45,13 @@ export function ConditionSelectStep({
       <View
         style={[
           { gap: spacing.sm },
-          isWideLayout && { flexDirection: 'row', flexWrap: 'wrap' },
+          isWideLayout &&
+            (Platform.OS === "web"
+              ? ({
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                } as object)
+              : { flexDirection: "row", flexWrap: "wrap" }),
         ]}
       >
         {conditions.map((condition) => {
@@ -51,17 +63,23 @@ export function ConditionSelectStep({
                 {
                   padding: spacing.base,
                   borderRadius: 16,
-                  backgroundColor: isDark ? colors.inputBg : '#FFFFFF',
+                  backgroundColor: isDark ? colors.inputBg : "#FFFFFF",
                   borderWidth: 2,
                   borderColor: isDark ? colors.borderSubtle : colors.inputBg,
-                  ...(Platform.OS === 'web' ? ({ cursor: 'pointer' } as object) : null),
+                  ...(Platform.OS === "web"
+                    ? ({ cursor: "pointer" } as object)
+                    : null),
                 },
                 isWideLayout && {
-                  flexGrow: 1,
-                  flexShrink: 1,
-                  flexBasis: 220,
-                  minWidth: 180,
-                  maxWidth: 320,
+                  ...(Platform.OS === "web"
+                    ? { width: "100%", minWidth: 0 }
+                    : {
+                        flexGrow: 1,
+                        flexShrink: 1,
+                        flexBasis: 220,
+                        minWidth: 180,
+                        maxWidth: 320,
+                      }),
                   backgroundColor: isDark ? colors.inputBg : colors.canvas,
                 },
                 selected && {
@@ -71,12 +89,18 @@ export function ConditionSelectStep({
               ]}
               onPress={() => onChange(condition.slug)}
             >
-              <Text style={{ fontFamily: 'DMSans_700Bold', fontSize: 16, color: colors.foreground }}>
+              <Text
+                style={{
+                  fontFamily: "DMSans_700Bold",
+                  fontSize: 16,
+                  color: colors.foreground,
+                }}
+              >
                 {condition.label}
               </Text>
               <Text
                 style={{
-                  fontFamily: 'DMSans_400Regular',
+                  fontFamily: "DMSans_400Regular",
                   fontSize: 13,
                   color: colors.muted,
                   marginTop: 4,
@@ -90,7 +114,13 @@ export function ConditionSelectStep({
       </View>
 
       {error ? (
-        <Text style={{ fontFamily: 'DMSans_500Medium', fontSize: 13, color: colors.danger }}>
+        <Text
+          style={{
+            fontFamily: "DMSans_500Medium",
+            fontSize: 13,
+            color: colors.danger,
+          }}
+        >
           {error}
         </Text>
       ) : null}
