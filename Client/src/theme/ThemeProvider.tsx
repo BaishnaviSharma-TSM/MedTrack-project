@@ -70,7 +70,7 @@ function injectWebTransitions() {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>(() => readStoredMode() ?? 'dark');
+  const [mode, setModeState] = useState<ThemeMode>(() => readStoredMode() ?? 'light');
 
   useEffect(() => {
     injectWebTransitions();
