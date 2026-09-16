@@ -37,7 +37,7 @@ function cellLayout(width?: number | `${number}%`): ViewStyle {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: 0,
-      ...(isWeb ? ({ flex: '1 1 0%' } as ViewStyle) : null),
+      ...(isWeb ? ({ flex: '1 1 0%' } as unknown as ViewStyle) : null),
     };
   }
 
@@ -57,7 +57,7 @@ function cellLayout(width?: number | `${number}%`): ViewStyle {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: 0,
-      ...(isWeb ? ({ flex: '1 1 0%' } as ViewStyle) : null),
+      ...(isWeb ? ({ flex: '1 1 0%' } as unknown as ViewStyle) : null),
     };
   }
 
@@ -66,7 +66,7 @@ function cellLayout(width?: number | `${number}%`): ViewStyle {
     flexGrow: pct,
     flexShrink: 1,
     flexBasis: 0,
-    ...(isWeb ? ({ flex: `${pct} 1 0%` } as ViewStyle) : null),
+    ...(isWeb ? ({ flex: `${pct} 1 0%` } as unknown as ViewStyle) : null),
   };
 }
 
@@ -182,23 +182,40 @@ export function DataTable<T>({
         ].filter(Boolean) as ViewStyle[];
 
         if (onRowPress) {
+          if (isWeb) {
+            return (
+              <View
+                key={rowKey}
+                style={rowStyles}
+                accessibilityRole="none"
+                {...{
+                  onClick: (event: { target?: { closest?: (selector: string) => Element | null } }) => {
+                    if (event.target?.closest?.('[data-stop-row-press="true"]')) {
+                      return;
+                    }
+                    onRowPress(row, index);
+                  },
+                  onMouseEnter: () => setHoveredKey(rowKey),
+                  onMouseLeave: () => setHoveredKey(null),
+                  tabIndex: 0,
+                  onKeyDown: (event: { key: string; preventDefault: () => void }) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onRowPress(row, index);
+                    }
+                  },
+                }}
+              >
+                {renderCells(row, index)}
+              </View>
+            );
+          }
+
           return (
             <Pressable
               key={rowKey}
               style={rowStyles}
-              onPress={(event) => {
-                if (isWeb) {
-                  const target = (
-                    event as unknown as { nativeEvent?: { target?: { closest?: (selector: string) => Element | null } } }
-                  ).nativeEvent?.target;
-                  if (target?.closest?.('[data-stop-row-press="true"]')) {
-                    return;
-                  }
-                }
-                onRowPress(row, index);
-              }}
-              onHoverIn={isWeb ? () => setHoveredKey(rowKey) : undefined}
-              onHoverOut={isWeb ? () => setHoveredKey(null) : undefined}
+              onPress={() => onRowPress(row, index)}
               accessibilityRole="button"
             >
               {renderCells(row, index)}

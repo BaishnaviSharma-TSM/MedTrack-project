@@ -101,8 +101,8 @@ export type Colors = typeof colors;
 
 /** Blob colors at 10% opacity for ambient lighting */
 export const blobColors = {
-  // violet: 'rgba(139, 92, 246, 0.1)',
-  // // pink: 'rgba(236, 72, 153, 0.1)',
-  // sky: 'rgba(14, 165, 233, 0.1)',
-  // emerald: 'rgba(16, 185, 129, 0.1)',
+  violet: 'rgba(139, 92, 246, 0.1)',
+  pink: 'rgba(236, 72, 153, 0.1)',
+  sky: 'rgba(14, 165, 233, 0.1)',
+  emerald: 'rgba(16, 185, 129, 0.1)',
 } as const;

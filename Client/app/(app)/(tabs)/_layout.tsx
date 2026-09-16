@@ -14,7 +14,6 @@ export default function TabsLayout() {
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
-          safeAreaInsets: { bottom: 0 },
         }}
       >
         <Tabs.Screen name="index" options={{ title: SCREEN_TITLES.home }} />

@@ -24,7 +24,7 @@ export function useDashboardStats() {
     setIsLoading(true);
     try {
       const data = await getDashboardStats();
-      setStats(data);
+      setStats({ ...EMPTY_STATS, ...data });
     } finally {
       setIsLoading(false);
     }

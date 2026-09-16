@@ -47,7 +47,7 @@ export default function HomeScreen() {
     stats.recentVisits.length === 0;
 
   /* ──────── Generate sparkline data from weekly rhythm ──────── */
-  const weeklyTotals = stats.weeklyVisitRhythm.map((w) => w.total);
+  const weeklyTotals = (stats.weeklyVisitRhythm ?? []).map((w) => w.total);
   const last7Weeks = weeklyTotals.slice(-7);
 
   /* ──────── MOBILE LAYOUT (unchanged fallback) ──────── */
