@@ -364,4 +364,119 @@ export default StyleSheet.create({
   pageStack: {
     gap: spacing.lg,
   },
+
+  /* ─── Compact / mobile card (visit-info layout) ───────────── */
+  scrollContentCompact: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
+  },
+  compactCard: {
+    backgroundColor: colors.cardGlassStrong,
+    borderRadius: 16,
+    ...shadows.clayCard,
+    overflow: "hidden",
+  },
+  compactCardFullScreen: {
+    flex: 1,
+    borderRadius: 0,
+    overflow: "hidden",
+  },
+  compactHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "nowrap",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+  },
+  compactHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    flex: 1,
+    minWidth: 0,
+  },
+  compactHeaderTitle: {
+    fontFamily: fontFamilies.heading.extraBold,
+    fontSize: fontSizes.base,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    flexShrink: 1,
+  },
+  compactSection: {
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.base,
+    gap: spacing.sm,
+  },
+  compactSectionTitle: {
+    fontFamily: fontFamilies.body.bold,
+    fontSize: fontSizes.xs,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    marginBottom: spacing.xs,
+  },
+  compactDivider: {
+    height: 1,
+  },
+  compactFieldGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  compactField: {
+    width: "50%",
+    paddingVertical: spacing.sm,
+    paddingRight: spacing.lg,
+  },
+  compactFieldFull: {
+    width: "100%",
+    paddingVertical: spacing.sm,
+    paddingRight: 0,
+  },
+  compactFieldLabel: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.xs,
+    letterSpacing: 0.3,
+    marginBottom: 3,
+  },
+  compactFieldValue: {
+    fontFamily: fontFamilies.body.bold,
+    fontSize: fontSizes.sm,
+  },
+  compactStatusTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
+    alignSelf: "flex-start",
+    marginTop: 2,
+  },
+  compactStatusDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+  },
+  compactStatusText: {
+    fontFamily: fontFamilies.body.bold,
+    fontSize: 10,
+    letterSpacing: 0.3,
+    textTransform: "uppercase",
+  },
+  compactVitalsEmpty: {
+    paddingVertical: spacing.sm,
+  },
+  compactHistoryHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.base,
+    paddingBottom: spacing.md,
+  },
 });

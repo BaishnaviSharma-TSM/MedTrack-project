@@ -27,10 +27,7 @@ export function VisitDetailSkeleton() {
     >
       {/* Header */}
       <View style={styles.rowBetween}>
-        <View style={[styles.row, { gap: 8 }]}>
-          <ShimmerBone width={28} height={28} radius={8} />
-          <ShimmerBone width={120} height={18} radius={6} />
-        </View>
+        <ShimmerBone width={120} height={18} radius={6} />
         <ShimmerBone width={130} height={36} radius={10} />
       </View>
 

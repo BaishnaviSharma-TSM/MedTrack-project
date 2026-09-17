@@ -156,7 +156,11 @@ export default function ProfileTabScreen() {
   ) : null;
 
   return (
-    <ScreenLayout title={SCREEN_TITLES.profile} subtitle={PROFILE_SUBTITLE}>
+    <ScreenLayout
+      title={SCREEN_TITLES.profile}
+      subtitle={PROFILE_SUBTITLE}
+      compactHeader="brand"
+    >
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={[

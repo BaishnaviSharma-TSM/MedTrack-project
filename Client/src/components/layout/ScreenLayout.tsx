@@ -11,8 +11,9 @@ type ScreenLayoutProps = WebPageMeta & {
   children: ReactNode;
   /** PageHeader background on compact layout */
   headerBackground?: 'white' | 'canvas' | 'transparent';
-  /** Brand logo header on compact layout (Home). Web still uses `title`. */
-  compactHeader?: 'title' | 'brand';
+  /** Brand logo header on compact layout (Home). Web still uses `title`.
+   *  'none' hides the compact header entirely (screen owns its own chrome). */
+  compactHeader?: 'title' | 'brand' | 'none';
 };
 
 /**
@@ -47,7 +48,7 @@ export function ScreenLayout({
     <View style={{ flex: 1 }}>
       {compactHeader === 'brand' ? (
         <AppHeader />
-      ) : title ? (
+      ) : compactHeader !== 'none' && title ? (
         <PageHeader
           title={title}
           showBack={showBack}

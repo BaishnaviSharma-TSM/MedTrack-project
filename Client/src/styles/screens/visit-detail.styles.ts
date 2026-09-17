@@ -10,6 +10,12 @@ export default StyleSheet.create({
     paddingBottom: spacing["2xl"],
     gap: spacing.lg,
   },
+  scrollContentCompact: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
+  },
 
   /* ── Card shell ─────────────────────────────────── */
   card: {
@@ -22,6 +28,10 @@ export default StyleSheet.create({
     flex: 1,
     minHeight: 0,
   },
+  cardFullScreen: {
+    flex: 1,
+    borderRadius: 0,
+  },
 
   /* ── Header row (back + title + patient link) ───── */
   headerRow: {
@@ -33,6 +43,12 @@ export default StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.base,
     borderBottomWidth: 1,
+  },
+  headerRowCompact: {
+    flexWrap: "nowrap",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
   },
   headerLeft: {
     flexDirection: "row",
@@ -50,6 +66,14 @@ export default StyleSheet.create({
     fontSize: fontSizes.lg,
     letterSpacing: 0.5,
     textTransform: "uppercase",
+    flexShrink: 1,
+  },
+  headerTitleCompact: {
+    fontSize: fontSizes.base,
+  },
+  headerActionCompact: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
 
   /* ── Section ────────────────────────────────────── */
@@ -57,6 +81,11 @@ export default StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.lg,
     gap: spacing.base,
+  },
+  sectionCompact: {
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.base,
+    gap: spacing.sm,
   },
   sectionTitle: {
     fontFamily: fontFamilies.body.bold,
@@ -76,6 +105,7 @@ export default StyleSheet.create({
   },
   fieldCell: {
     width: "50%",
+    minWidth: 0,
     paddingVertical: spacing.sm,
     paddingRight: spacing.lg,
   },
@@ -86,6 +116,11 @@ export default StyleSheet.create({
   fieldCellStacked: {
     width: "100%",
     paddingVertical: spacing.sm,
+    paddingRight: 0,
+  },
+  fieldCellCompact: {
+    paddingVertical: spacing.xs,
+    paddingRight: spacing.md,
   },
   fieldLabel: {
     fontFamily: fontFamilies.body.medium,

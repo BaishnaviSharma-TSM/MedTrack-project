@@ -19,11 +19,13 @@ import {
   type FindingVital,
   type VitalStatus,
 } from "@/features/visits/utils/analyzeVisitVitals";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { useDocumentTitle, useIsWideLayout } from "@/hooks";
 import { formatDisplayDateTime } from "@/utils/formatDisplayDate";
 import { getRelativeTime } from "@/utils/getRelativeTime";
 import type { Visit } from "@/types";
-import { useTheme } from "@/theme";
+import { spacing, useTheme } from "@/theme";
 import wideStyles from "@/styles/layout/wide-layout.styles";
 import styles from "@/styles/screens/visit-detail.styles";
 
@@ -48,12 +50,14 @@ function FieldCell({
   value,
   full,
   stacked,
+  compact,
   children,
 }: {
   label: string;
   value?: string;
   full?: boolean;
   stacked?: boolean;
+  compact?: boolean;
   children?: React.ReactNode;
 }) {
   const { colors } = useTheme();
@@ -63,6 +67,7 @@ function FieldCell({
         styles.fieldCell,
         full && styles.fieldCellFull,
         stacked && styles.fieldCellStacked,
+        compact && !stacked && styles.fieldCellCompact,
       ]}
     >
       <Text style={[styles.fieldLabel, { color: colors.muted }]}>{label}</Text>
@@ -165,11 +170,17 @@ function StatusTag({ status }: { status: VitalStatus }) {
   );
 }
 
-function VitalField({ reading }: { reading: MeasuredVital }) {
+function VitalField({
+  reading,
+  compact,
+}: {
+  reading: MeasuredVital;
+  compact?: boolean;
+}) {
   const { colors } = useTheme();
   const unit = reading.unit ? ` ${reading.unit}` : "";
   return (
-    <FieldCell label={reading.label}>
+    <FieldCell label={reading.label} compact={compact}>
       <Text style={[styles.fieldValue, { color: colors.foreground }]}>
         {reading.displayValue}
         {unit ? (
@@ -190,6 +201,7 @@ export default function VisitDetailScreen() {
   const { visitId } = useLocalSearchParams<{ visitId: string }>();
   const isWideLayout = useIsWideLayout();
   const { colors, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const [record, setRecord] = useState<VisitRecord | null>(null);
   const [patientVisits, setPatientVisits] = useState<Visit[]>([]);
@@ -242,19 +254,88 @@ export default function VisitDetailScreen() {
 
   /* ── Render ──────────────────────────────────────── */
 
+  const mobileCardBg = {
+    backgroundColor: isDark ? colors.cardBg : "#FFFFFF",
+    borderColor: isDark ? colors.borderSubtle : "#E8E4EF",
+    borderWidth: isDark ? 1 : 0,
+  };
+
+  const mobileHeader = (
+    <View
+      style={[
+        styles.headerRow,
+        styles.headerRowCompact,
+        {
+          borderBottomColor: dividerColor,
+          paddingTop: insets.top + spacing.md,
+        },
+      ]}
+    >
+      <View style={styles.headerLeft}>
+        <Pressable
+          style={styles.backButton}
+          onPress={goToVisitsList}
+          accessibilityRole="button"
+          accessibilityLabel="Back to visits list"
+          hitSlop={{ top: 12, bottom: 12, left: 4, right: 12 }}
+        >
+          <Feather name="chevron-left" size={26} color={colors.muted} />
+        </Pressable>
+        <Text
+          style={[
+            styles.headerTitle,
+            styles.headerTitleCompact,
+            { color: colors.foreground },
+          ]}
+          numberOfLines={1}
+        >
+          Visit Info
+        </Text>
+      </View>
+      {record ? (
+        <ClayButton
+          label="View patient"
+          variant="outline"
+          icon="external-link"
+          iconPosition="right"
+          onPress={() => router.push(`/(app)/patients/${record.patient.id}`)}
+          style={styles.headerActionCompact}
+        />
+      ) : null}
+    </View>
+  );
+
   if (isLoading) {
     return (
       <ScreenContainer fullWidth>
-        <ScreenLayout title="Visit Detail" headerBackground="canvas">
-          <ScrollView
-            style={styles.scroll}
-            contentContainerStyle={[
-              styles.scrollContent,
-              isWideLayout && wideStyles.contentContainer,
-            ]}
-          >
-            <VisitDetailSkeleton />
-          </ScrollView>
+        <ScreenLayout
+          title="Visit Detail"
+          headerBackground="canvas"
+          showBack
+          onBack={goToVisitsList}
+          compactHeader="none"
+        >
+          {isWideLayout ? (
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={[
+                styles.scrollContent,
+                wideStyles.contentContainer,
+              ]}
+            >
+              <VisitDetailSkeleton />
+            </ScrollView>
+          ) : (
+            <View style={[styles.card, styles.cardFullScreen, mobileCardBg]}>
+              {mobileHeader}
+              <ScrollView
+                style={styles.scroll}
+                contentContainerStyle={styles.scrollContentCompact}
+              >
+                <VisitDetailSkeleton />
+              </ScrollView>
+            </View>
+          )}
         </ScreenLayout>
       </ScreenContainer>
     );
@@ -263,10 +344,25 @@ export default function VisitDetailScreen() {
   if (!record || !analysis) {
     return (
       <ScreenContainer fullWidth>
-        <ScreenLayout title="Visit Detail" headerBackground="canvas">
-          <Text style={[styles.muted, { color: colors.muted }]}>
-            Visit not found.
-          </Text>
+        <ScreenLayout
+          title="Visit Detail"
+          headerBackground="canvas"
+          showBack
+          onBack={goToVisitsList}
+          compactHeader="none"
+        >
+          {isWideLayout ? (
+            <Text style={[styles.muted, { color: colors.muted }]}>
+              Visit not found.
+            </Text>
+          ) : (
+            <View style={[styles.card, styles.cardFullScreen, mobileCardBg]}>
+              {mobileHeader}
+              <Text style={[styles.muted, { color: colors.muted }]}>
+                Visit not found.
+              </Text>
+            </View>
+          )}
         </ScreenLayout>
       </ScreenContainer>
     );
@@ -281,9 +377,14 @@ export default function VisitDetailScreen() {
     (f) => f.displayValue !== "Yes" && f.displayValue !== "No",
   );
 
+  const sectionStyle = [
+    styles.section,
+    !isWideLayout && styles.sectionCompact,
+  ];
+
   /* ── Visit Information section (left / top) ─────── */
   const visitInfoSection = (
-    <View style={styles.section}>
+    <View style={sectionStyle}>
       <Text style={[styles.sectionTitle, { color: colors.muted }]}>
         Details
       </Text>
@@ -291,14 +392,14 @@ export default function VisitDetailScreen() {
         <FieldCell
           label="Patient Name"
           value={patient.name}
-          stacked={stackFields}
+          compact={stackFields}
         />
         <FieldCell
           label="Patient ID"
           value={patient.uniqueId}
-          stacked={stackFields}
+          compact={stackFields}
         />
-        <FieldCell label="Condition" stacked={stackFields}>
+        <FieldCell label="Condition" compact={stackFields}>
           <View
             style={{
               flexDirection: "row",
@@ -318,18 +419,18 @@ export default function VisitDetailScreen() {
         <FieldCell
           label="Visit Date"
           value={formatDisplayDateTime(visit.visitDate)}
-          stacked={stackFields}
+          compact={stackFields}
         />
         <FieldCell
           label="Age / Gender"
           value={`${patient.age} yrs · ${formatGender(patient.gender)}`}
-          stacked={stackFields}
+          compact={stackFields}
         />
         {visit.doctorName ? (
           <FieldCell
             label="Attending Doctor"
             value={visit.doctorName}
-            stacked={stackFields}
+            compact={stackFields}
           />
         ) : null}
         {/* {timeline && timeline.total > 0 ? (
@@ -342,7 +443,7 @@ export default function VisitDetailScreen() {
         <FieldCell
           label="Recorded"
           value={getRelativeTime(visit.visitDate)}
-          stacked={stackFields}
+          compact={stackFields}
         />
       </View>
     </View>
@@ -350,7 +451,7 @@ export default function VisitDetailScreen() {
 
   /* ── Vitals Recorded section (right / bottom) ───── */
   const vitalsSection = (
-    <View style={styles.section}>
+    <View style={sectionStyle}>
       <Text style={[styles.sectionTitle, { color: colors.muted }]}>
         Vitals Recorded
       </Text>
@@ -358,7 +459,11 @@ export default function VisitDetailScreen() {
       {analysis.measured.length > 0 ? (
         <View style={styles.fieldGrid}>
           {analysis.measured.map((reading) => (
-            <VitalField key={reading.key} reading={reading} />
+            <VitalField
+              key={reading.key}
+              reading={reading}
+              compact={stackFields}
+            />
           ))}
         </View>
       ) : (
@@ -441,7 +546,7 @@ export default function VisitDetailScreen() {
   /* ── Notes & Clinical section ────────────────────── */
   const hasNotes = visit.notes || visit.prescription || visit.followUp;
   const clinicalSection = hasNotes ? (
-    <View style={styles.section}>
+    <View style={sectionStyle}>
       <Text style={[styles.sectionTitle, { color: colors.muted }]}>
         Clinical Notes
       </Text>
@@ -471,7 +576,7 @@ export default function VisitDetailScreen() {
           <FieldCell
             label="Follow-up"
             value={visit.followUp}
-            stacked={stackFields}
+            compact={stackFields}
           />
         ) : null}
         {visit.notes ? (
@@ -499,68 +604,67 @@ export default function VisitDetailScreen() {
     <ScreenContainer fullWidth>
       <ScreenLayout
         title={pageTitle}
+        headerBackground="canvas"
         showBack
-        onBack={() => router.navigate("/(app)/(tabs)/visits")}
+        onBack={goToVisitsList}
+        compactHeader="none"
       >
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[
-            styles.scrollContent,
-            isWideLayout && wideStyles.contentContainer,
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View
-            style={[
-              styles.card,
-              isWideLayout && styles.cardFill,
-              {
-                backgroundColor: isDark ? colors.cardBg : "#FFFFFF",
-                borderColor: isDark ? colors.borderSubtle : "#E8E4EF",
-                borderWidth: isDark ? 1 : 0,
-              },
+        {isWideLayout ? (
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={[
+              styles.scrollContent,
+              wideStyles.contentContainer,
             ]}
+            showsVerticalScrollIndicator={false}
           >
-            {/* ─ Accent stripe ─ */}
             <View
               style={[
-                styles.accentStripe,
-                { backgroundColor: colors.accent.primary },
+                styles.card,
+                styles.cardFill,
+                {
+                  backgroundColor: isDark ? colors.cardBg : "#FFFFFF",
+                  borderColor: isDark ? colors.borderSubtle : "#E8E4EF",
+                  borderWidth: isDark ? 1 : 0,
+                },
               ]}
-            />
-
-            {/* ─ Header ─ */}
-            <View
-              style={[styles.headerRow, { borderBottomColor: dividerColor }]}
             >
-              <View style={styles.headerLeft}>
-                <Pressable
-                  style={styles.backButton}
-                  onPress={goToVisitsList}
-                  accessibilityRole="button"
-                  accessibilityLabel="Back to visits list"
-                  hitSlop={{ top: 12, bottom: 12, left: 4, right: 12 }}
-                >
-                  <Feather name="chevron-left" size={26} color={colors.muted} />
-                </Pressable>
-                <Text
-                  style={[styles.headerTitle, { color: colors.foreground }]}
-                  numberOfLines={1}
-                >
-                  Visit Info
-                </Text>
+              <View
+                style={[styles.headerRow, { borderBottomColor: dividerColor }]}
+              >
+                <View style={styles.headerLeft}>
+                  <Pressable
+                    style={styles.backButton}
+                    onPress={goToVisitsList}
+                    accessibilityRole="button"
+                    accessibilityLabel="Back to visits list"
+                    hitSlop={{ top: 12, bottom: 12, left: 4, right: 12 }}
+                  >
+                    <Feather
+                      name="chevron-left"
+                      size={26}
+                      color={colors.muted}
+                    />
+                  </Pressable>
+                  <Text
+                    style={[
+                      styles.headerTitle,
+                      { color: colors.foreground },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    Visit Info
+                  </Text>
+                </View>
+                <ClayButton
+                  label="View patient"
+                  variant="outline"
+                  icon="external-link"
+                  iconPosition="right"
+                  onPress={() => router.push(`/(app)/patients/${patient.id}`)}
+                />
               </View>
-              <ClayButton
-                label="View patient"
-                variant="outline"
-                icon="external-link"
-                iconPosition="right"
-                onPress={() => router.push(`/(app)/patients/${patient.id}`)}
-              />
-            </View>
 
-            {/* ─ Body ─ */}
-            {isWideLayout ? (
               <View style={[styles.bodyRow, styles.bodyRowWide]}>
                 <View style={styles.bodyLeft}>
                   {visitInfoSection}
@@ -577,28 +681,35 @@ export default function VisitDetailScreen() {
                 />
                 <View style={styles.bodyRight}>{vitalsSection}</View>
               </View>
-            ) : (
-              <View style={styles.bodyRow}>
-                {visitInfoSection}
-                <View
-                  style={[styles.divider, { backgroundColor: dividerColor }]}
-                />
-                {vitalsSection}
-                {clinicalSection ? (
-                  <>
-                    <View
-                      style={[
-                        styles.divider,
-                        { backgroundColor: dividerColor },
-                      ]}
-                    />
-                    {clinicalSection}
-                  </>
-                ) : null}
-              </View>
-            )}
+            </View>
+          </ScrollView>
+        ) : (
+          <View style={[styles.card, styles.cardFullScreen, mobileCardBg]}>
+            {mobileHeader}
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={styles.scrollContentCompact}
+              showsVerticalScrollIndicator={false}
+            >
+              {visitInfoSection}
+              <View
+                style={[styles.divider, { backgroundColor: dividerColor }]}
+              />
+              {vitalsSection}
+              {clinicalSection ? (
+                <>
+                  <View
+                    style={[
+                      styles.divider,
+                      { backgroundColor: dividerColor },
+                    ]}
+                  />
+                  {clinicalSection}
+                </>
+              ) : null}
+            </ScrollView>
           </View>
-        </ScrollView>
+        )}
       </ScreenLayout>
     </ScreenContainer>
   );

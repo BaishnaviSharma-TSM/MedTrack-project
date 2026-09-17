@@ -64,10 +64,12 @@ export function PageHeader({
         ) : null}
         <Text
           style={{
+            flex: 1,
             fontFamily: fontFamilies.heading.bold,
             fontSize: fontSizes.xl,
             color: colors.foreground,
           }}
+          numberOfLines={1}
         >
           {title}
         </Text>
