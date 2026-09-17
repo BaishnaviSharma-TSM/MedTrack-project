@@ -3,28 +3,65 @@ import { View } from 'react-native';
 import { ShimmerBone } from '@/components/feedback/ShimmerBone';
 import styles from '@/styles/feedback/skeletons.styles';
 
+function FieldPair() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 24 }}>
+      <View style={{ flex: 1, gap: 4, paddingVertical: 8 }}>
+        <ShimmerBone width="40%" height={10} radius={4} />
+        <ShimmerBone width="70%" height={14} radius={6} />
+      </View>
+      <View style={{ flex: 1, gap: 4, paddingVertical: 8 }}>
+        <ShimmerBone width="35%" height={10} radius={4} />
+        <ShimmerBone width="60%" height={14} radius={6} />
+      </View>
+    </View>
+  );
+}
+
 export function VisitDetailSkeleton() {
   return (
     <View
-      style={[styles.whiteCard, { flex: 1 }]}
+      style={styles.whiteCard}
       accessibilityRole="progressbar"
       accessibilityLabel="Loading visit"
     >
+      {/* Header */}
       <View style={styles.rowBetween}>
-        <ShimmerBone width="28%" height={18} radius={6} />
-        <ShimmerBone width={168} height={40} radius={12} />
-      </View>
-      {Array.from({ length: 3 }).map((_, sectionIndex) => (
-        <View key={sectionIndex} style={styles.footerMeta}>
-          <ShimmerBone width="22%" height={12} radius={6} />
-          {Array.from({ length: 3 }).map((_, rowIndex) => (
-            <View key={rowIndex} style={styles.detailRow}>
-              <ShimmerBone width="35%" height={13} radius={6} />
-              <ShimmerBone width="40%" height={14} radius={6} />
-            </View>
-          ))}
+        <View style={[styles.row, { gap: 8 }]}>
+          <ShimmerBone width={28} height={28} radius={8} />
+          <ShimmerBone width={120} height={18} radius={6} />
         </View>
-      ))}
+        <ShimmerBone width={130} height={36} radius={10} />
+      </View>
+
+      {/* Visit Information fields */}
+      <View style={styles.footerMeta}>
+        <ShimmerBone width="30%" height={10} radius={4} />
+        <View style={{ marginTop: 12, gap: 4 }}>
+          <FieldPair />
+          <FieldPair />
+          <FieldPair />
+          <FieldPair />
+        </View>
+      </View>
+
+      {/* Vitals fields */}
+      <View style={styles.footerMeta}>
+        <ShimmerBone width="25%" height={10} radius={4} />
+        <View style={{ marginTop: 12, gap: 4 }}>
+          <FieldPair />
+          <FieldPair />
+          <FieldPair />
+        </View>
+      </View>
+
+      {/* Notes */}
+      <View style={styles.footerMeta}>
+        <ShimmerBone width="28%" height={10} radius={4} />
+        <View style={{ marginTop: 12 }}>
+          <ShimmerBone width="100%" height={60} radius={12} />
+        </View>
+      </View>
     </View>
   );
 }

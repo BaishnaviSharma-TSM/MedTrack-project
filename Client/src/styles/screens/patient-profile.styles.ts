@@ -19,176 +19,234 @@ export default StyleSheet.create({
     gap: spacing.lg,
   },
 
-  /* ─── Hero Identity Card ──────────────────────────────────── */
+  /* ─── Compact Hero Bar ─────────────────────────────────────── */
   heroCard: {
     backgroundColor: colors.cardGlassStrong,
     borderRadius: radii.card,
     padding: spacing.lg,
     ...shadows.clayCard,
     overflow: "hidden",
+    gap: spacing.base,
   },
   heroBrandStrip: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: 6,
+    height: 4,
     backgroundColor: colors.brand.primary,
     borderTopLeftRadius: radii.card,
     borderTopRightRadius: radii.card,
   },
-  heroHeaderRow: {
+  heroTopRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
-    gap: spacing.base,
+    gap: spacing.lg,
     marginTop: spacing.xs,
   },
-  heroInner: {
+  heroMainRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.base,
     flex: 1,
     minWidth: 0,
+    gap: spacing.lg,
+  },
+  heroIdentityRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    flexShrink: 0,
+    minWidth: 0,
+  },
+  heroDivider: {
+    width: 1,
+    alignSelf: "stretch",
+    marginVertical: 2,
+  },
+  backButton: {
+    padding: spacing.xs,
+    marginRight: 2,
+    ...(Platform.OS === "web" ? ({ cursor: "pointer" } as object) : null),
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     backgroundColor: colors.brand.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    ...shadows.clayButton,
-  },
-  avatarText: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: 26,
-    color: colors.white,
-  },
-  heroTextWrap: {
-    flex: 1,
-    gap: 4,
-  },
-  patientName: {
-    fontFamily: fontFamilies.heading.extraBold,
-    fontSize: fontSizes.xl,
-    color: colors.foreground,
-  },
-  idBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    backgroundColor: colors.brand.alpha08,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: 999,
-    gap: 4,
-  },
-  idBadgeText: {
-    fontFamily: fontFamilies.body.bold,
-    fontSize: fontSizes.xs,
-    color: colors.brand.primary,
-    letterSpacing: 0.4,
-  },
-  detailsDivider: {
-    marginTop: spacing.lg,
-    paddingTop: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.brand.alpha08,
-  },
-
-  /* ─── Quick Stats ─────────────────────────────────────────── */
-  statsRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: colors.cardGlassStrong,
-    borderRadius: radii.medium,
-    padding: spacing.base,
-    alignItems: "center",
-    gap: 6,
-    ...shadows.clayCard,
-  },
-  statIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 2,
-  },
-  statValue: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: fontSizes.base,
-    color: colors.foreground,
-    textAlign: "center",
-  },
-  statLabel: {
-    fontFamily: fontFamilies.body.regular,
-    fontSize: fontSizes.xs,
-    color: colors.muted,
-    textAlign: "center",
-  },
-
-  /* ─── Details section (inside hero card) ──────────────────── */
-  detailsHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    marginBottom: spacing.base,
-  },
-  detailsTitle: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: fontSizes.lg,
-    color: colors.foreground,
-  },
-  detailsGrid: {
-    gap: spacing.md,
-  },
-  detailPairRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: spacing.lg,
-    paddingBottom: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F1EEF6",
-  },
-  detailPairRowLast: {
-    borderBottomWidth: 0,
-    paddingBottom: 0,
-  },
-  detailField: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: spacing.sm,
-    minWidth: 0,
-  },
-  detailIconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: colors.brand.alpha06,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
   },
-  detailTextWrap: {
+  avatarText: {
+    fontFamily: fontFamilies.heading.bold,
+    fontSize: 22,
+    color: colors.white,
+  },
+  heroTextWrap: {
+    gap: 3,
+    minWidth: 0,
+    maxWidth: 220,
+  },
+  patientName: {
+    fontFamily: fontFamilies.heading.extraBold,
+    fontSize: fontSizes.lg,
+    color: colors.foreground,
+  },
+  heroMetaLine: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.xs,
+    color: colors.muted,
+  },
+  heroDetailsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: spacing.xl,
     flex: 1,
     minWidth: 0,
   },
-  detailLabel: {
-    fontFamily: fontFamilies.body.regular,
-    fontSize: fontSizes.xs,
-    color: colors.muted,
-    marginBottom: 1,
+  heroDetailsRowWide: {
+    flexWrap: "nowrap",
   },
-  detailValue: {
+  heroDetailCol: {
+    minWidth: 72,
+    gap: 2,
+  },
+  heroDetailLabel: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: 10,
+    color: colors.muted,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+  },
+  heroDetailValue: {
     fontFamily: fontFamilies.body.bold,
     fontSize: fontSizes.sm,
     color: colors.foreground,
+  },
+
+  /* ─── Vitals + Stats two-column ───────────────────────────── */
+  insightsRow: {
+    gap: spacing.lg,
+  },
+  insightsRowWide: {
+    flexDirection: "row",
+    alignItems: "stretch",
+  },
+  vitalsPanel: {
+    borderRadius: radii.card,
+    padding: spacing.lg,
+    ...shadows.clayCard,
+    gap: spacing.base,
+    flex: 1.35,
+    minWidth: 0,
+  },
+  vitalsPanelHeader: {
+    gap: 4,
+  },
+  vitalsPanelTitle: {
+    fontFamily: fontFamilies.heading.bold,
+    fontSize: fontSizes.lg,
+    color: colors.foreground,
+  },
+  vitalsPanelSubtitle: {
+    fontFamily: fontFamilies.body.regular,
+    fontSize: fontSizes.xs,
+    color: colors.muted,
+    lineHeight: 18,
+  },
+  vitalsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+  },
+  vitalTile: {
+    flexGrow: 1,
+    flexBasis: "30%",
+    minWidth: 130,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    gap: 6,
+  },
+  vitalTileLabel: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.xs,
+    letterSpacing: 0.2,
+  },
+  vitalTileValueRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    flexWrap: "wrap",
+  },
+  vitalTileValue: {
+    fontFamily: fontFamilies.heading.bold,
+    fontSize: fontSizes.xl,
+  },
+  vitalTileUnit: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.xs,
+    marginLeft: 3,
+  },
+  vitalTileFooter: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: 11,
+    lineHeight: 15,
+  },
+  vitalsEmpty: {
+    alignItems: "center",
+    paddingVertical: spacing.xl,
+    gap: spacing.sm,
+  },
+  vitalsEmptyText: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.sm,
+    textAlign: "center",
+  },
+
+  statsStack: {
+    gap: spacing.sm,
+    flex: 0.65,
+    minWidth: 0,
+  },
+  statsStackWide: {
+    alignSelf: "stretch",
+  },
+  statStackCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.base,
+    borderRadius: radii.medium,
+    padding: spacing.base,
+    ...shadows.clayCard,
+    minHeight: 72,
+  },
+  statStackCardWide: {
+    flex: 1,
+    paddingVertical: spacing.md,
+  },
+  statStackIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  statStackTextWrap: {
+    flex: 1,
+    gap: 2,
+    minWidth: 0,
+  },
+  statStackPrimary: {
+    fontFamily: fontFamilies.heading.bold,
+    fontSize: fontSizes.base,
+  },
+  statStackSecondary: {
+    fontFamily: fontFamilies.body.regular,
+    fontSize: fontSizes.xs,
   },
 
   /* ─── Visit History Section ───────────────────────────────── */
@@ -283,12 +341,6 @@ export default StyleSheet.create({
     fontSize: fontSizes.sm,
     color: colors.foreground,
   },
-  historyVitals: {
-    fontFamily: fontFamilies.body.regular,
-    fontSize: fontSizes.xs,
-    color: colors.muted,
-    lineHeight: 17,
-  },
   historyChevron: {
     width: 28,
     height: 28,
@@ -298,13 +350,11 @@ export default StyleSheet.create({
     justifyContent: "center",
   },
 
-  /* ─── Table wrapper for wide layout ───────────────────────── */
   tableWrap: {
     paddingHorizontal: spacing.base,
     paddingBottom: spacing.base,
   },
 
-  /* ─── Empty & Muted ───────────────────────────────────────── */
   emptyWrap: {
     alignItems: "center",
     paddingVertical: spacing.xl,
@@ -323,7 +373,6 @@ export default StyleSheet.create({
     color: colors.muted,
   },
 
-  /* ─── Page stack ──────────────────────────────────────────── */
   pageStack: {
     gap: spacing.lg,
   },

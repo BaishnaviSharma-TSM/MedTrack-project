@@ -15,3 +15,12 @@ export function formatDisplayDateTime(isoDate: string) {
     minute: '2-digit',
   });
 }
+
+/** Compact date for vitals footers — e.g. "16 Sept" */
+export function formatShortDisplayDate(isoDate: string) {
+  const formatted = new Date(isoDate).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+  });
+  return formatted.replace(/^0/, '');
+}

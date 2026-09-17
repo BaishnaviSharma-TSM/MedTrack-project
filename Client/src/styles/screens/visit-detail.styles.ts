@@ -1,50 +1,32 @@
 import { Platform, StyleSheet } from "react-native";
 
-import { fontFamilies, fontSizes, spacing } from "@/theme";
+import { colors, fontFamilies, fontSizes, radii, shadows, spacing } from "@/theme";
 
 export default StyleSheet.create({
-  /* ── Layout scaffolding ─────────────────────────── */
+  /* ── Layout ─────────────────────────────────────── */
   scroll: { flex: 1 },
-  page: {
-    flex: 1,
-    minHeight: 0,
-    ...(Platform.OS === "web" ? ({ height: "100%" } as object) : null),
-  },
-  pagePad: {
-    flex: 1,
-    minHeight: 0,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.lg,
-    ...(Platform.OS === "web"
-      ? ({ height: "100%", boxSizing: "border-box" } as object)
-      : null),
-  },
   scrollContent: {
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xl,
-    flexGrow: 1,
+    paddingBottom: spacing["2xl"],
+    gap: spacing.lg,
   },
 
-  /* ── Main card ──────────────────────────────────── */
+  /* ── Card shell ─────────────────────────────────── */
   card: {
-    borderRadius: 18,
-    borderWidth: 1,
+    backgroundColor: colors.cardGlassStrong,
+    borderRadius: radii.card,
+    ...shadows.clayCard,
     overflow: "hidden",
-    width: "100%",
   },
   cardFill: {
     flex: 1,
     minHeight: 0,
-    flexDirection: "column",
   },
-
-  /* ── Accent stripe (top of card) ────────────────── */
   accentStripe: {
-    height: 5,
+    height: 4,
   },
 
-  /* ── Header row ─────────────────────────────────── */
+  /* ── Header row (back + title + patient link) ───── */
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -54,169 +36,80 @@ export default StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.base,
     borderBottomWidth: 1,
-    flexShrink: 0,
   },
   headerLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
+    gap: spacing.sm,
     flex: 1,
     minWidth: 0,
   },
-  headerIconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+  backButton: {
+    padding: spacing.xs,
+    ...(Platform.OS === "web" ? ({ cursor: "pointer" } as object) : null),
   },
-  heading: {
+  headerTitle: {
     fontFamily: fontFamilies.heading.extraBold,
     fontSize: fontSizes.lg,
-    letterSpacing: 0.8,
+    letterSpacing: 0.5,
     textTransform: "uppercase",
-  },
-
-  /* ── Body / scroll area ─────────────────────────── */
-  body: {
-    flex: 1,
-    minHeight: 0,
-    ...(Platform.OS === "web" ? ({ overflow: "auto" } as object) : null),
-  },
-
-  /* ── Patient banner ─────────────────────────────── */
-  patientBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.base,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.base,
-  },
-  patientAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  patientAvatarText: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: fontSizes.xl,
-    color: "#FFFFFF",
-  },
-  patientBannerInfo: {
-    flex: 1,
-    minWidth: 0,
-  },
-  patientName: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: fontSizes.xl,
-  },
-  patientMeta: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.sm,
-    marginTop: 2,
-  },
-
-  /* ── Sections grid ──────────────────────────────── */
-  sectionsRow: {
-    flexDirection: "row",
-    alignItems: "stretch",
-  },
-  sectionsRowFill: {
-    flex: 1,
-    minHeight: 0,
-  },
-  dividerH: {
-    height: 1,
-    flexShrink: 0,
-  },
-  dividerV: {
-    width: 1,
   },
 
   /* ── Section ────────────────────────────────────── */
   section: {
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.base,
-    gap: spacing.sm,
-  },
-  sectionWide: {
-    paddingVertical: 0,
-    paddingTop: spacing.lg,
-    paddingBottom: 0,
-    gap: 5,
-  },
-  sectionFlex: {
-    flex: 1,
-    minWidth: 0,
-    minHeight: 0,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    marginBottom: spacing.xs,
-  },
-  sectionIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingVertical: spacing.lg,
+    gap: spacing.base,
   },
   sectionTitle: {
     fontFamily: fontFamilies.body.bold,
     fontSize: fontSizes.xs,
     letterSpacing: 1,
     textTransform: "uppercase",
+    marginBottom: spacing.xs,
+  },
+  divider: {
+    height: 1,
   },
 
-  /* ── Field grid ─────────────────────────────────── */
+  /* ── Two-column field grid (like the reference) ── */
   fieldGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: spacing.base,
   },
-  fieldGridWide: {
-    gap: spacing.lg,
+  fieldCell: {
+    width: "50%",
+    paddingVertical: spacing.sm,
+    paddingRight: spacing.lg,
   },
-
-  /* ── Individual field ───────────────────────────── */
-  field: {
-    minWidth: 130,
-    flexGrow: 1,
-    flexBasis: 130,
-    gap: 3,
+  fieldCellFull: {
+    width: "100%",
+    paddingVertical: spacing.sm,
   },
-  fieldStacked: {
-    flexBasis: "100%",
-    minWidth: "100%",
+  fieldCellStacked: {
+    width: "100%",
+    paddingVertical: spacing.sm,
   },
   fieldLabel: {
     fontFamily: fontFamilies.body.medium,
     fontSize: fontSizes.xs,
     letterSpacing: 0.3,
+    marginBottom: 3,
   },
   fieldValue: {
     fontFamily: fontFamilies.body.bold,
     fontSize: fontSizes.sm,
   },
 
-  /* ── Condition / Severity badges ────────────────── */
-  badgeRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    marginTop: spacing.xs,
-  },
+  /* ── Severity badge ─────────────────────────────── */
   badge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 20,
+    alignSelf: "flex-start",
   },
   badgeDot: {
     width: 7,
@@ -229,148 +122,91 @@ export default StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  /* ── Condition description ──────────────────────── */
-  conditionDesc: {
-    fontFamily: fontFamilies.body.regular,
-    fontSize: fontSizes.xs,
-    lineHeight: 18,
-    marginTop: 2,
-  },
-
-  /* ── Relative time chip ─────────────────────────── */
-  relativeTimeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginTop: 2,
-  },
-  relativeTimeText: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.xs,
-  },
-
-  /* ── Vitals grid ────────────────────────────────── */
-  vitalsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-  },
-  vitalCard: {
-    minWidth: 140,
-    flexGrow: 1,
-    flexBasis: 140,
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
-    gap: 4,
-  },
-  vitalLabel: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.xs,
-    letterSpacing: 0.2,
-  },
-  vitalValue: {
-    fontFamily: fontFamilies.heading.bold,
-    fontSize: fontSizes.xl,
-  },
-  vitalUnit: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.xs,
-    marginLeft: 3,
-  },
-  vitalValueRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-  },
-  vitalStatusBadge: {
+  /* ── Status tag (Normal / High / Low) ───────────── */
+  statusTag: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginTop: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
     alignSelf: "flex-start",
+    marginTop: 2,
   },
-  vitalStatusDot: {
+  statusDot: {
     width: 5,
     height: 5,
     borderRadius: 3,
   },
-  vitalStatusText: {
+  statusText: {
     fontFamily: fontFamilies.body.bold,
     fontSize: 10,
     letterSpacing: 0.3,
     textTransform: "uppercase",
   },
 
-  /* ── Prescription section ───────────────────────── */
-  prescriptionBox: {
-    borderRadius: 12,
-    borderWidth: 1,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.md,
+  /* ── Findings chips ─────────────────────────────── */
+  findingsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.sm,
   },
-  prescriptionText: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.sm,
-    lineHeight: 22,
-  },
-  followUpRow: {
+  findingChip: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    marginTop: spacing.xs,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 10,
-    alignSelf: "flex-start",
+    borderRadius: 12,
+    borderWidth: 1,
   },
-  followUpText: {
+  findingChipLabel: {
+    fontFamily: fontFamilies.body.medium,
+    fontSize: fontSizes.xs,
+  },
+  findingChipValue: {
     fontFamily: fontFamilies.body.bold,
     fontSize: fontSizes.xs,
   },
 
-  /* ── Notes section ──────────────────────────────── */
+  /* ── Notes box ──────────────────────────────────── */
   notesBox: {
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
   },
-  notes: {
+  notesText: {
     fontFamily: fontFamilies.body.regular,
     fontSize: fontSizes.sm,
     lineHeight: 22,
   },
 
-  /* ── Doctor / visit-count info row ──────────────── */
-  infoChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    alignSelf: "flex-start",
+  /* ── Two-column body on wide ────────────────────── */
+  bodyRow: {
+    gap: 0,
   },
-  infoChipText: {
-    fontFamily: fontFamilies.body.medium,
-    fontSize: fontSizes.xs,
-  },
-  infoChipsRow: {
+  bodyRowWide: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
+    alignItems: "stretch",
+  },
+  bodyLeft: {
+    flex: 1.1,
+    minWidth: 0,
+  },
+  bodyRight: {
+    flex: 1,
+    minWidth: 0,
+  },
+  bodyDividerV: {
+    width: 1,
   },
 
   /* ── Muted fallback ─────────────────────────────── */
   muted: {
     fontFamily: fontFamilies.body.medium,
     fontSize: fontSizes.base,
+    paddingVertical: spacing.xl,
+    textAlign: "center",
   },
 });
