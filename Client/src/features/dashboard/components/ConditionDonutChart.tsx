@@ -1,6 +1,7 @@
 import { Platform, Pressable, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
+import { getConditionLabel } from '@/features/visits/services/visitRecordService';
 import { fontFamilies, useTheme } from '@/theme';
 import type { ConditionCount } from '../types';
 
@@ -171,7 +172,7 @@ export function ConditionDonutChart({ data }: ConditionDonutChartProps) {
                   }}
                   numberOfLines={1}
                 >
-                  {item.label}
+                  {getConditionLabel(item.condition)}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

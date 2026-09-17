@@ -1,4 +1,4 @@
-import { CONDITIONS } from '@/constants';
+import { getConditionLabelFromCache } from '@/features/conditions/conditionsCache';
 import { getPatients } from '@/features/patients/services/patientService.mock';
 import type { Patient } from '@/types';
 
@@ -6,9 +6,7 @@ import type { VisitRecord } from '../types';
 import { getAllVisits } from './visitService.mock';
 
 export function getConditionLabel(condition?: string) {
-  if (!condition) return 'General Checkup';
-  const known = CONDITIONS[condition as keyof typeof CONDITIONS];
-  return known?.label ?? condition;
+  return getConditionLabelFromCache(condition);
 }
 
 async function buildVisitRecords(allPatients: Patient[]): Promise<VisitRecord[]> {

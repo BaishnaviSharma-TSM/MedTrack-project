@@ -173,9 +173,7 @@ function VitalField({ reading }: { reading: MeasuredVital }) {
       <Text style={[styles.fieldValue, { color: colors.foreground }]}>
         {reading.displayValue}
         {unit ? (
-          <Text style={{ color: colors.muted, fontWeight: "400" }}>
-            {unit}
-          </Text>
+          <Text style={{ color: colors.muted, fontWeight: "400" }}>{unit}</Text>
         ) : null}
       </Text>
       {reading.status ? <StatusTag status={reading.status} /> : null}
@@ -225,19 +223,14 @@ export default function VisitDetailScreen() {
 
   const timeline = useMemo(
     () =>
-      record
-        ? getVisitTimelineContext(patientVisits, record.visit.id)
-        : null,
+      record ? getVisitTimelineContext(patientVisits, record.visit.id) : null,
     [patientVisits, record],
   );
 
   const analysis = useMemo(
     () =>
       record
-        ? analyzeVisitVitals(
-            record.visit.vitals,
-            timeline?.previous?.vitals,
-          )
+        ? analyzeVisitVitals(record.visit.vitals, timeline?.previous?.vitals)
         : null,
     [record, timeline],
   );
@@ -295,17 +288,25 @@ export default function VisitDetailScreen() {
         Details
       </Text>
       <View style={styles.fieldGrid}>
-        <FieldCell label="Patient Name" value={patient.name} stacked={stackFields} />
+        <FieldCell
+          label="Patient Name"
+          value={patient.name}
+          stacked={stackFields}
+        />
         <FieldCell
           label="Patient ID"
           value={patient.uniqueId}
           stacked={stackFields}
         />
-        <FieldCell
-          label="Condition"
-          stacked={stackFields}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <FieldCell label="Condition" stacked={stackFields}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
             <Text style={[styles.fieldValue, { color: colors.foreground }]}>
               {conditionLabel}
             </Text>
@@ -460,9 +461,7 @@ export default function VisitDetailScreen() {
                 },
               ]}
             >
-              <Text
-                style={[styles.notesText, { color: colors.foreground }]}
-              >
+              <Text style={[styles.notesText, { color: colors.foreground }]}>
                 {visit.prescription}
               </Text>
             </View>
@@ -486,9 +485,7 @@ export default function VisitDetailScreen() {
                 },
               ]}
             >
-              <Text
-                style={[styles.notesText, { color: colors.foreground }]}
-              >
+              <Text style={[styles.notesText, { color: colors.foreground }]}>
                 {visit.notes}
               </Text>
             </View>
@@ -544,11 +541,7 @@ export default function VisitDetailScreen() {
                   accessibilityLabel="Back to visits list"
                   hitSlop={{ top: 12, bottom: 12, left: 4, right: 12 }}
                 >
-                  <Feather
-                    name="chevron-left"
-                    size={26}
-                    color={colors.muted}
-                  />
+                  <Feather name="chevron-left" size={26} color={colors.muted} />
                 </Pressable>
                 <Text
                   style={[styles.headerTitle, { color: colors.foreground }]}
@@ -562,9 +555,7 @@ export default function VisitDetailScreen() {
                 variant="outline"
                 icon="external-link"
                 iconPosition="right"
-                onPress={() =>
-                  router.push(`/(app)/patients/${patient.id}`)
-                }
+                onPress={() => router.push(`/(app)/patients/${patient.id}`)}
               />
             </View>
 

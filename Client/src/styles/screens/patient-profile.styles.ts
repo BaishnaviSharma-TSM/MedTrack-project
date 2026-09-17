@@ -4,7 +4,6 @@ import {
   colors,
   spacing,
   shadows,
-  radii,
   fontFamilies,
   fontSizes,
 } from "@/theme";
@@ -22,28 +21,17 @@ export default StyleSheet.create({
   /* ─── Compact Hero Bar ─────────────────────────────────────── */
   heroCard: {
     backgroundColor: colors.cardGlassStrong,
-    borderRadius: radii.card,
+    borderRadius: 16,
     padding: spacing.lg,
     ...shadows.clayCard,
     overflow: "hidden",
     gap: spacing.base,
-  },
-  heroBrandStrip: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 4,
-    backgroundColor: colors.brand.primary,
-    borderTopLeftRadius: radii.card,
-    borderTopRightRadius: radii.card,
   },
   heroTopRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: spacing.lg,
-    marginTop: spacing.xs,
   },
   heroMainRow: {
     flexDirection: "row",
@@ -135,7 +123,7 @@ export default StyleSheet.create({
     alignItems: "stretch",
   },
   vitalsPanel: {
-    borderRadius: radii.card,
+    borderRadius: 16,
     padding: spacing.lg,
     ...shadows.clayCard,
     gap: spacing.base,
@@ -165,7 +153,7 @@ export default StyleSheet.create({
     flexGrow: 1,
     flexBasis: "30%",
     minWidth: 130,
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.md,
@@ -218,7 +206,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.base,
-    borderRadius: radii.medium,
+    borderRadius: 16,
     padding: spacing.base,
     ...shadows.clayCard,
     minHeight: 72,
@@ -252,7 +240,7 @@ export default StyleSheet.create({
   /* ─── Visit History Section ───────────────────────────────── */
   historySection: {
     backgroundColor: colors.cardGlassStrong,
-    borderRadius: radii.card,
+    borderRadius: 16,
     ...shadows.clayCard,
     overflow: "hidden",
   },
@@ -301,7 +289,7 @@ export default StyleSheet.create({
     alignItems: "center",
     gap: spacing.md,
     backgroundColor: colors.white,
-    borderRadius: radii.icon,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "#EEEAF4",
     padding: spacing.base,

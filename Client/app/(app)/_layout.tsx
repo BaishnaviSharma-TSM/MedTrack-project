@@ -1,7 +1,9 @@
 import { Redirect, Stack } from 'expo-router';
+import { useEffect } from 'react';
 
 import { LoadingScreen } from '@/components/feedback';
 import { WebAppShell } from '@/components/layout';
+import { getConditions } from '@/features/conditions/services/conditionsService';
 import { useIsWideLayout } from '@/hooks';
 import { useAuthContext } from '@/providers';
 
@@ -21,6 +23,11 @@ function ClinicalStack() {
 export default function AppLayout() {
   const { isAuthenticated, isLoading, user } = useAuthContext();
   const isWideLayout = useIsWideLayout();
+
+  useEffect(() => {
+    if (!isAuthenticated || user?.role === 'admin') return;
+    void getConditions().catch(() => undefined);
+  }, [isAuthenticated, user?.role]);
 
   if (isLoading) {
     return <LoadingScreen />;

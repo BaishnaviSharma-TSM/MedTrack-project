@@ -1,5 +1,7 @@
 import type { ConditionType } from '@/types';
 
+import { CONDITIONS } from './conditions';
+
 /**
  * Teal-ramp condition definitions for stacked charts.
  *
@@ -27,13 +29,13 @@ export interface ChartCondition {
  */
 
 export const CHART_CONDITIONS: ChartCondition[] = [
-  { id: 'general',      name: 'General checkup',  color: '#063b38', darkColor: '#86d5ce' },
-  { id: 'fever',        name: 'Fever',            color: '#12857c', darkColor: '#4dbcb4' },
-  { id: 'hypertension', name: 'Hypertension',     color: '#4dbcb4', darkColor: '#19a39a' },
-  { id: 'diabetes',     name: 'Diabetes review',  color: '#bfe9e5', darkColor: '#0e6b64' },
-  { id: 'asthma',       name: 'Asthma',           color: '#19a39a', darkColor: '#12857c' },
-  { id: 'cardiac',      name: 'Cardiac checkup',  color: '#0e6b64', darkColor: '#063b38' },
-  { id: 'anemia',       name: 'Anemia',           color: '#86d5ce', darkColor: '#bfe9e5' },
+  { id: 'general',      name: CONDITIONS.general.label,      color: '#063b38', darkColor: '#86d5ce' },
+  { id: 'fever',        name: CONDITIONS.fever.label,        color: '#12857c', darkColor: '#4dbcb4' },
+  { id: 'hypertension', name: CONDITIONS.hypertension.label, color: '#4dbcb4', darkColor: '#19a39a' },
+  { id: 'diabetes',     name: CONDITIONS.diabetes.label,     color: '#bfe9e5', darkColor: '#0e6b64' },
+  { id: 'asthma',       name: CONDITIONS.asthma.label,       color: '#19a39a', darkColor: '#12857c' },
+  { id: 'cardiac',      name: CONDITIONS.cardiac.label,      color: '#0e6b64', darkColor: '#063b38' },
+  { id: 'anemia',       name: CONDITIONS.anemia.label,       color: '#86d5ce', darkColor: '#bfe9e5' },
 ];
 
 /** Quick lookup: condition id → { color, darkColor } */

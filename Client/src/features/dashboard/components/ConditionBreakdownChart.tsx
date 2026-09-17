@@ -1,5 +1,6 @@
 import { Text, View, type StyleProp, type ViewStyle } from "react-native";
 
+import { getConditionLabel } from "@/features/visits/services/visitRecordService";
 import { fontFamilies, useTheme } from "@/theme";
 import type { ConditionCount } from "../types";
 
@@ -84,7 +85,7 @@ export function ConditionBreakdownChart({
                 }}
                 numberOfLines={1}
               >
-                {item.label}
+                {getConditionLabel(item.condition)}
               </Text>
               <View
                 style={{

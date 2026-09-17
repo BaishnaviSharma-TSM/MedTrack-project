@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 
-import { colors, fontFamilies, fontSizes, radii, shadows, spacing } from "@/theme";
+import { colors, fontFamilies, fontSizes, shadows, spacing } from "@/theme";
 
 export default StyleSheet.create({
   /* ── Layout ─────────────────────────────────────── */
@@ -14,16 +14,13 @@ export default StyleSheet.create({
   /* ── Card shell ─────────────────────────────────── */
   card: {
     backgroundColor: colors.cardGlassStrong,
-    borderRadius: radii.card,
+    borderRadius: 16,
     ...shadows.clayCard,
     overflow: "hidden",
   },
   cardFill: {
     flex: 1,
     minHeight: 0,
-  },
-  accentStripe: {
-    height: 4,
   },
 
   /* ── Header row (back + title + patient link) ───── */

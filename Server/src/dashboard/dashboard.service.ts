@@ -175,6 +175,15 @@ export class DashboardService {
       anemia: 'Anemia',
     };
 
-    return labels[slug] ?? slug;
+    return labels[slug] ?? this.toTitleCase(slug);
+  }
+
+  private toTitleCase(value: string) {
+    return value
+      .replace(/[_-]+/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 }

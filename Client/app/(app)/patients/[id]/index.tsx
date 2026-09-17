@@ -34,7 +34,10 @@ function formatGender(gender: string) {
 
 type VitalStatus = "normal" | "high" | "low";
 
-function getVitalStatus(key: string, value: string | number | boolean): VitalStatus | null {
+function getVitalStatus(
+  key: string,
+  value: string | number | boolean,
+): VitalStatus | null {
   if (typeof value !== "number") return null;
   const range = NORMAL_RANGES[key];
   if (!range) return null;
@@ -50,7 +53,10 @@ function getVitalTileColors(
   if (status === "high") {
     return isDark
       ? { bg: "rgba(248, 113, 113, 0.12)", border: "rgba(248, 113, 113, 0.25)" }
-      : { bg: "rgba(254, 226, 226, 0.85)", border: "rgba(252, 165, 165, 0.45)" };
+      : {
+          bg: "rgba(254, 226, 226, 0.85)",
+          border: "rgba(252, 165, 165, 0.45)",
+        };
   }
   if (status === "low") {
     return isDark
@@ -60,7 +66,10 @@ function getVitalTileColors(
   if (status === "normal") {
     return isDark
       ? { bg: "rgba(52, 211, 153, 0.08)", border: "rgba(52, 211, 153, 0.18)" }
-      : { bg: "rgba(236, 253, 245, 0.75)", border: "rgba(167, 243, 208, 0.45)" };
+      : {
+          bg: "rgba(236, 253, 245, 0.75)",
+          border: "rgba(167, 243, 208, 0.45)",
+        };
   }
   return isDark
     ? { bg: "rgba(148, 163, 184, 0.08)", border: "rgba(148, 163, 184, 0.18)" }
@@ -73,7 +82,7 @@ function getVitalFooterNote(snapshot: VitalSnapshot): string | null {
   if (status === "low") return "low normal";
   if (status === "high") return "high";
   if (snapshot.condition && snapshot.condition !== "general") {
-    return getConditionLabel(snapshot.condition).toLowerCase();
+    return getConditionLabel(snapshot.condition);
   }
   return null;
 }
@@ -94,7 +103,9 @@ function HeroDetailCol({
   const { colors } = useTheme();
   return (
     <View style={baseStyles.heroDetailCol}>
-      <Text style={[baseStyles.heroDetailLabel, { color: colors.muted }]}>{label}</Text>
+      <Text style={[baseStyles.heroDetailLabel, { color: colors.muted }]}>
+        {label}
+      </Text>
       <Text
         style={[
           baseStyles.heroDetailValue,
@@ -130,7 +141,10 @@ function VitalSnapshotTile({ snapshot }: VitalSnapshotTileProps) {
         },
       ]}
     >
-      <Text style={[baseStyles.vitalTileLabel, { color: colors.muted }]} numberOfLines={1}>
+      <Text
+        style={[baseStyles.vitalTileLabel, { color: colors.muted }]}
+        numberOfLines={1}
+      >
         {snapshot.label}
       </Text>
       <View style={baseStyles.vitalTileValueRow}>
@@ -143,7 +157,10 @@ function VitalSnapshotTile({ snapshot }: VitalSnapshotTileProps) {
           </Text>
         ) : null}
       </View>
-      <Text style={[baseStyles.vitalTileFooter, { color: colors.muted }]} numberOfLines={2}>
+      <Text
+        style={[baseStyles.vitalTileFooter, { color: colors.muted }]}
+        numberOfLines={2}
+      >
         {footer}
       </Text>
     </View>
@@ -246,7 +263,10 @@ export default function PatientProfileScreen() {
   );
 
   const lastVisit = visits[0];
-  const latestVitals = useMemo(() => buildLatestVitalsSnapshot(visits), [visits]);
+  const latestVitals = useMemo(
+    () => buildLatestVitalsSnapshot(visits),
+    [visits],
+  );
 
   const themedCard = {
     backgroundColor: isDark ? colors.cardGlass : colors.cardGlassStrong,
@@ -268,7 +288,9 @@ export default function PatientProfileScreen() {
   const lastConditionPrimary = lastVisit
     ? getConditionLabel(lastVisit.condition)
     : "—";
-  const lastConditionSecondary = lastVisit ? "Last condition · monitoring" : "Last condition";
+  const lastConditionSecondary = lastVisit
+    ? "Last condition · monitoring"
+    : "Last condition";
 
   return (
     <ScreenContainer fullWidth>
@@ -290,12 +312,6 @@ export default function PatientProfileScreen() {
           ) : (
             <View style={baseStyles.pageStack}>
               <View style={[baseStyles.heroCard, themedCard]}>
-                <View
-                  style={[
-                    baseStyles.heroBrandStrip,
-                    { backgroundColor: colors.brand.primary },
-                  ]}
-                />
                 <View style={baseStyles.heroTopRow}>
                   <View style={baseStyles.heroMainRow}>
                     <View style={baseStyles.heroIdentityRow}>

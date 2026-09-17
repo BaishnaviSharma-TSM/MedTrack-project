@@ -349,8 +349,8 @@ export function VisitRhythmCard({
                 const segY = yOffset - segH;
                 const tooltipText =
                   range === 90
-                    ? `${fmtRange(bucket.start, bucket.end)} · ${seg.count} ${seg.condName.toLowerCase()}`
-                    : `${fmtShort(bucket.start)} · ${seg.count} ${seg.condName.toLowerCase()}`;
+                    ? `${fmtRange(bucket.start, bucket.end)} · ${seg.count} ${seg.condName}`
+                    : `${fmtShort(bucket.start)} · ${seg.count} ${seg.condName}`;
 
                 rects.push(
                   <rect
